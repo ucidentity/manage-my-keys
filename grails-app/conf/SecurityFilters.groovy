@@ -9,6 +9,9 @@ class SecurityFilters {
     /* AuthorizationService */
     def authorizationService
     
+    /* GoogleAppsService */
+    def googleAppsService
+    
     def filters = {
         
         /** 
@@ -54,8 +57,11 @@ class SecurityFilters {
         /**
          * CalMail authorized users check.
          */
-        isAuthorizedCalMail(controller:'bmail', action:'*') {
+        isAuthorizedCalMail(controller:'bapps', action:'*') {
             before = {
+                if (!session.googleAppsAccounts) {
+                    session.googleAppsAccounts = googleAppsService.googleAppsAccounts(session.person)
+                }
                 if (authorizationService.isAuthorizedCalMail(session.googleAppsAccounts)) {
                     return true
                 }

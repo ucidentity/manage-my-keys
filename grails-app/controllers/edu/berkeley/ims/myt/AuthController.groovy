@@ -34,7 +34,6 @@ class AuthController {
                 redirect(action:'failure')
             }
             else {
-                //def person = ldapService.findByEppn(user)
                 def person = ldapService.find(
                     grailsApplication.config.ldap.personUsernameAttr, user)
                 if (person) {

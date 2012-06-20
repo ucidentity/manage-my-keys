@@ -99,6 +99,9 @@ environments {
         /* Password for the Google Apps API */
         //myt.gAppsPassword = '' // berkeley.edu
         myt.gAppsPassword = '' // testg.berkeley.edu
+        
+        /* domain_id in the CalMail accounts table. */
+        myt.gAppsDomainId = 110
 
         /* CalNet username attribute 
            eduPersonPrincipalName for dev and test
@@ -195,6 +198,9 @@ environments {
         /* Password for the Google Apps API */
         myt.gAppsPassword = '' // testg.berkeley.edu
         
+        /* domain_id in the CalMail accounts table. */
+        myt.gAppsDomainId = 110
+        
         /* Where the application should send the user after logout. This will
            probably be the CAS logout URL, or the local Shib SP logout URL.
            http://nose10-2.local/Shibboleth.sso/Logout for dev and test
@@ -288,6 +294,9 @@ environments {
 
         /* Password for the Google Apps API */
         myt.gAppsPassword = '' // testg.berkeley.edu
+        
+        /* domain_id in the CalMail accounts table. */
+        myt.gAppsDomainId = 110
         
         /* CalNet username attribute  */
         myt.calNetUsername = 'berkeleyEduKerberosPrincipalString'
