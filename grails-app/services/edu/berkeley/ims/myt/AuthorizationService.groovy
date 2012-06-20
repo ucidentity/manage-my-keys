@@ -45,5 +45,6 @@ class AuthorizationService {
         if (googleAppsAccounts?.size() == 0) {
             return false
         }
+        return true
     }
 }
