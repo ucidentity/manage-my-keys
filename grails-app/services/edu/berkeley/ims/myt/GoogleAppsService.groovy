@@ -30,11 +30,12 @@ class GoogleAppsService {
      * still be a list.
      */
     def googleAppsAccounts(person) {
-        
         def uid = person.getAttributeValueAsInteger('uid')
-        log.debug("uid: ${uid}")
         
-        def calMailAccounts = CalMail.findAllByOwnerUidAndDomainId(uid, 1)
+        def calMailAccounts = CalMail.findAllByOwnerUidAndDomainId(
+            uid, 
+            grailsApplication.config.myt.gAppsDomainId)
+
         def gAppsAccounts = []
         if (calMailAccounts) {
             calMailAccounts.each { account ->
