@@ -171,12 +171,7 @@ class BappsController {
      * authorized to be in the section at all, the user would have been stopped
      * by the SecurityFilters.
      */
-    protected accountFromId() {        
-        if (!session.googleAppsAccounts) {
-            session.googleAppsAccounts = 
-                googleAppsService.googleAppsAccounts(session.person)
-        }
-        
+    protected accountFromId() {
         // Only do this if the user has any Google apps. If not, then the
         // SecurityFilter will pick it up.
         if (session.googleAppsAccounts) {
