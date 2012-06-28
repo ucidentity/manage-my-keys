@@ -202,6 +202,9 @@ class BappsController {
         /* TokenService service */
         def tokenService
         
+        /* CalNetService service */
+        def calNetService
+        
         String token
         
         String definedToken
@@ -214,7 +217,16 @@ class BappsController {
                     return 'googleAppsCommand.token.donotmatch'
                 }
             })
-            definedToken(blank:true,nullable:true,size:9..255)
+            definedToken(blank:true,nullable:true,size:9..255, validator: { val, obj ->
+                if (obj.definedTokenConfirmation &&
+                    obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
+                    return 'googleAppsCommand.definedToken.cannotmatchcalnet'
+                }
+                else if (obj.definedTokenConfirmation &&
+                    !obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
+                    return 'googleAppsCommand.definedToken.doesnotmeetrequirements'
+                }
+            })
             definedTokenConfirmation(blank:true,nullable:true,size:9..255, validator: {val, obj ->
                 if (val && val != obj.definedToken) {
                     return 'googleAppsCommand.definedTokenConfirmation.donotmatch'
