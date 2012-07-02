@@ -44,7 +44,11 @@ grails.project.dependency.resolution = {
         runtime 'com.google:google.http.client:1.9.0'
         runtime 'com.google:guava:11.0.2'
         runtime 'com.google:jsr305:305'
-        compile 'org.grails.plugins:mail:1.0'
+        
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
+            excludes "commons-logging", "xml-apis", "groovy"
+        }
+        
     }
 
     plugins {
