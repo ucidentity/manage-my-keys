@@ -110,16 +110,17 @@ class BappsController {
                 }
             }
         }
-        else {
+        else if (currentAccount) {
             redirect(action:'index')
         }
+        // The final else would have already been handled by accountFromId()
     }
     
     /**
      * Displays the token if the user chooses the pre-generated token.
      */
     def view() {
-        if (!flash.token) {
+        if (!flash.token && currentAccount) {
             redirect(action:'index')
         }
         else {
