@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>${flash.success}${flash.error}<g:if test="${flash.success || flash.error}"> | </g:if>Manage My Tokens</title>
+    <title>${flash.title}<g:if test="${flash.title}"> | </g:if>Manage My Tokens</title>
     <meta name="description" content="UCB Application-specific Token app">
     <meta name="author" content="Lucas Rockwell">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
