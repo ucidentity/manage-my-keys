@@ -62,6 +62,28 @@ grails.hibernate.cache.queries = true
 // MailService Plugin
 grails.mail.disabled=false
 
+/*
+ * Passwords, so they are all in one place so we can easily
+ * remove them before committing. I would rather changes these
+ * often in one place, than remember to check all the envs
+ * before committing and building.
+ */
+/* Mail password, needed for dev only. */
+grails.mail.password = ''
+
+/* Krb Service password. */
+myt.krbAuthKey = ''
+
+/* Google Apps password. */
+myt.gAppsPassword = '' // testg.berkeley.edu
+
+/* LDAP password. */
+//ldap.bindPassword = '' // dev
+ldap.bindPassword = '' // ucb dev, test, prod
+
+/* CalNet Test ID passphrase. */
+myt.calNetTestIdPassphrase = ''
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     development {
@@ -71,11 +93,10 @@ environments {
         grails.serverURL = 'http://nose10-2.local/mmt'
         
         grails.mail.host = 'mail.ucsf.edu'
-        grails.mail.from = 'lucas.rockwell@ucsf.edu'
-        grails.mail.replyTo = 'donotreply@berkeley.edu'
+        grails.mail.from = 'vldappy@ucsf.edu'
+        grails.mail.replyTo = 'donotreply@ucsf.edu.edu'
         grails.mail.port = 465
-        grails.mail.username = 'campus\\lrockwell'
-        grails.mail.password = ''
+        grails.mail.username = 'ldappys@som.ucsf.edu'
         grails.mail.props = [
             "mail.smtp.auth":"true",
             "mail.smtp.socketFactory.port":"465",
@@ -90,15 +111,17 @@ environments {
            https://auth.berkeley.edu/cas/logout for UCB prod */
         myt.logoutURL = 'http://nose10-2.local/Shibboleth.sso/Logout'
         
+        /* Kerberos Service app ID. */
+        myt.krbAppId = 'calnettoken'
+        
+        /* Kerberos Service URL. */
+        myt.krbURL = 'https://net-auth.berkeley.edu/cgi-bin/krbservice?'
+        
         /* Google Apps API URL for getting and update a user entry */
         myt.gAppsUrl = 'https://apps-apis.google.com/a/feeds/testg.berkeley.edu/user/2.0'
         
         /* Username for the Google Apps API */
         myt.gAppsUsername = 'tokenapp@testg.berkeley.edu'
-
-        /* Password for the Google Apps API */
-        //myt.gAppsPassword = '' // berkeley.edu
-        myt.gAppsPassword = '' // testg.berkeley.edu
         
         /* domain_id in the CalMail accounts table. */
         myt.gAppsDomainId = 110
@@ -106,7 +129,8 @@ environments {
         /* CalNet username attribute 
            eduPersonPrincipalName for dev and test
            berkeleyEduKerberosPrincipalString for production */
-        myt.calNetUsername = 'eduPersonPrincipalName'
+        //myt.calNetUsername = 'eduPersonPrincipalName'
+        myt.calNetUsername = 'carLicense' // Contains 'lr' for Lucas
 
         /* Attribute in ldap that will be used for the username in the WPA token
            database.
@@ -138,9 +162,6 @@ environments {
 
         /* DN of the privileged LDAP bind. */
         ldap.bindDn = 'cn=Manager With Timeout'
-
-        /* Password of the privileged LDAP bind. */
-        ldap.bindPassword = ''
 
         /* DN of the LDAP server. */
         ldap.baseDn = 'dc=ucsf,dc=edu'
@@ -181,7 +202,6 @@ environments {
         grails.mail.replyTo = 'donotreply@berkeley.edu'
         grails.mail.port = 465
         grails.mail.username = 'campus\\lrockwell'
-        grails.mail.password = ''
         grails.mail.props = [
             "mail.smtp.auth":"true",
             "mail.smtp.socketFactory.port":"465",
@@ -194,9 +214,6 @@ environments {
         
         /* Username for the Google Apps API */
         myt.gAppsUsername = 'tokenapp@testg.berkeley.edu'
-
-        /* Password for the Google Apps API */
-        myt.gAppsPassword = '' // testg.berkeley.edu
         
         /* domain_id in the CalMail accounts table. */
         myt.gAppsDomainId = 110
@@ -208,10 +225,17 @@ environments {
            https://auth.berkeley.edu/cas/logout for UCB prod */
         myt.logoutURL = 'http://nose10-2.local/Shibboleth.sso/Logout'
 
+        /* Kerberos Service app ID. */
+        myt.krbAppId = 'calnettoken'
+        
+        /* Kerberos Service URL. */
+        myt.krbURL = 'https://net-auth.berkeley.edu/cgi-bin/krbservice?'
+
         /* CalNet username attribute 
            eduPersonPrincipalName for dev and test
            berkeleyEduKerberosPrincipalString for production */
         myt.calNetUsername = 'eduPersonPrincipalName'
+        //myt.calNetUsername = 'berkeleyEduKerberosPrincipalString'
 
         /* Attribute in ldap that will be used for the username in the WPA token
            database.
@@ -227,10 +251,12 @@ environments {
         /* LDAP hostname(s). If more than one, separate them with a comma. Do not
            leave a space. */
         ldap.addresses = 'localhost,localhost'
+        //ldap.addresses = 'ldap-test.berkeley.edu'
 
         /* LDAP port(s). If more than one, separate them with a comma. Do not leave a
            space, and they number must match the number of hosts, above. */
         ldap.ports = '3636,3636'
+        //ldap.ports = '636'
 
         /* Whether or not the LDAP service should auto reconnect. */
         ldap.autoReconnect = true
@@ -243,15 +269,15 @@ environments {
 
         /* DN of the privileged LDAP bind. */
         ldap.bindDn = 'cn=Manager With Timeout'
-
-        /* Password of the privileged LDAP bind. */
-        ldap.bindPassword = ''
+        //ldap.bindDn = 'uid=manage_tokens,ou=applications,dc=berkeley,dc=edu'
 
         /* DN of the LDAP server. */
         ldap.baseDn = 'dc=ucsf,dc=edu'
+        //ldap.baseDn = 'dc=berkeley,dc=edu'
 
         /* DN for the branch where people are found in the LDAP server. */
-        ldap.peopleDn = 'ou=people,dc=ucsf,dc=edu'
+        //ldap.peopleDn = 'ou=people,dc=ucsf,dc=edu'
+        ldap.peopleDn = 'ou=people,dc=berkeley,dc=edu'
 
         /* RDN attribute for people, e.g., uid, cn. */
         ldap.peopleRdnAttr = 'uid'
@@ -275,8 +301,8 @@ environments {
     production {
         grails.logging.jul.usebridge = false
         
-        //grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmt'
-        grails.serverURL = 'https://idc-test.berkeley.edu/mmt'
+        grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmt'
+        //grails.serverURL = 'https://idc-test.berkeley.edu/mmt'
         
         grails.mail.host = 'localhost'
         grails.mail.from = 'donotreply@berkeley.edu'
@@ -286,14 +312,17 @@ environments {
         /* Where the application should send the user after logout. */
         myt.logoutURL = 'https://auth-test.berkeley.edu/cas/logout'
 
+        /* Kerberos Service app ID. */
+        myt.krbAppId = 'calnettoken'
+
+        /* Kerberos Service URL. */
+        myt.krbURL = 'https://net-auth.berkeley.edu/cgi-bin/krbservice?'
+
         /* Google Apps API URL for getting and update a user entry */
         myt.gAppsUrl = 'https://apps-apis.google.com/a/feeds/testg.berkeley.edu/user/2.0'
         
         /* Username for the Google Apps API */
         myt.gAppsUsername = 'tokenapp@testg.berkeley.edu'
-
-        /* Password for the Google Apps API */
-        myt.gAppsPassword = '' // testg.berkeley.edu
         
         /* domain_id in the CalMail accounts table. */
         myt.gAppsDomainId = 110
@@ -310,7 +339,7 @@ environments {
         
         /* LDAP hostname(s). If more than one, separate them with a comma. Do not
            leave a space. */
-        ldap.addresses = 'ldap-test.berkeley.edu,ldap-test.berkeley.edu'
+        ldap.addresses = 'ldap.berkeley.edu,ldap.berkeley.edu'
 
         /* LDAP port(s). If more than one, separate them with a comma. Do not leave a
            space, and they number must match the number of hosts, above. */
@@ -327,9 +356,6 @@ environments {
 
         /* DN of the privileged LDAP bind. */
         ldap.bindDn = 'uid=manage_tokens,ou=applications,dc=berkeley,dc=edu'
-
-        /* Password of the privileged LDAP bind. */
-        ldap.bindPassword = ''
 
         /* DN of the LDAP server. */
         ldap.baseDn = 'dc=berkeley,dc=edu'
@@ -387,7 +413,12 @@ log4j = {
            'net.sf.ehcache.hibernate'
            
     info 'grails.app.edu.berkeley.ims.myt',
-         'grails.app.services.edu.berkeley.ims.myt.WpaService'
+         'grails.app.services.edu.berkeley.ims.myt.WpaService',
+         'grails.app.services.edu.berkeley.ims.myt.KerberosService'
+         'grails.app.services.edu.berkeley.ims.myt.GoogleAppsService'
     
-    debug 'grails.app.edu.berkeley.ims.myt'
+    debug 'grails.app.edu.berkeley.ims.myt',
+          'grails.app.services.edu.berkeley.ims.myt.WpaService',
+          'grails.app.services.edu.berkeley.ims.myt.KerberosService',
+          'grails.app.services.edu.berkeley.ims.myt.GoogleAppsService'
 }
