@@ -61,6 +61,7 @@ class WpaController {
             
             if (!tokenService.verifyCurrentToken(session.currentToken, params.token)) {
                 flash.error = message(code: 'wpa.alert.save.canNotSetError')
+                flash.title = message(code: 'wpa.alert.save.canNotSetErrorForTitle')
                 redirect(action:'set')
             }
             else {
@@ -71,6 +72,7 @@ class WpaController {
                 }
                 else {
                     flash.success = message(code: 'wpa.alert.save.success')
+                    flash.title = message(code: 'wpa.alert.save.successForTitle')
                     emailService.sendWpaSetConfirmation(session.person)
                     redirect(action:'view')
                 }
@@ -90,6 +92,7 @@ class WpaController {
             wpaService.deleteToken(session.person)
             emailService.sendWpaDeleteConfirmation(session.person)
             flash.success = message(code: 'wpa.alert.delete.success')
+            flash.title = message(code: 'wpa.alert.delete.successForTitle')
             redirect(action:'index')
         }
     }

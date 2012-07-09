@@ -80,7 +80,8 @@ class BappsController {
         if (request.method == 'POST') {
             def userDefined = params.definedToken ? true : false
             if (cmd.hasErrors()) {
-                
+                flash.title = message(code: 'bapps.alert.save.errorForTitle', 
+                    args:[currentUsername])
                 return new ModelAndView('/bapps/set',
                     ['token':params.token, 'account':currentAccount,
                      'googleApps':cmd, 'userDefined':userDefined])
@@ -93,17 +94,22 @@ class BappsController {
                     if (params.definedToken) {
                         flash.success = message(code: 'bapps.alert.save.success', 
                             args:[currentUsername])
+                        flash.title = message(code: 'bapps.alert.save.successForTitleDefined', 
+                            args:[currentUsername])
                         // Redirect to either index or choose...
                         session.googleAppsAccounts.size() == 1 ? 
                             redirect(action:'index') : redirect(action:'choose')
                     }
                     else {
                         flash.token = params.definedToken ?: params.token
+                        flash.title = message(code: 'bapps.alert.save.successForTitleGenerated', 
+                            args:[currentUsername])
                         redirect(action:'view', id:params.id)
                     }
                 }
                 else {
                     flash.error = result.error
+                    flash.title = result.error
                     return new ModelAndView('/bapps/set',
                         ['token':params.token, 'account':currentAccount,
                          'googleApps':cmd, 'userDefined':userDefined])
@@ -146,6 +152,8 @@ class BappsController {
                 emailService.sendBappsDeleteConfirmation(session.person, currentUsername)
                 flash.success = message(code:'bapps.alert.delete.success',
                     args:[currentUsername])
+                flash.title = message(code:'bapps.alert.delete.successForTitle',
+                    args:[currentUsername])
 
                 // Redirect to either index or choose...
                 session.googleAppsAccounts.size() == 1 ? 
@@ -153,6 +161,7 @@ class BappsController {
             }
             else {
                 flash.error = result.error
+                flash.title = result.error
                 return new ModelAndView('/bapps/delete',
                     ['account':currentAccount])
             }
