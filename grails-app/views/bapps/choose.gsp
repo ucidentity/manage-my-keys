@@ -2,9 +2,7 @@
 
 <h2><g:message code="bapps.choose.heading" /></h2>
 
-<g:include controller="alert" action="flashSuccess" />        
-
-<p><g:message code="bapps.index.moreThanOneAccountMessage" /></p>
+<g:include controller="alert" action="flashSuccess" />
 
 <h3>Choose Account</h3>
 

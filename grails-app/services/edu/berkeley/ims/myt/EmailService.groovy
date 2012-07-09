@@ -16,7 +16,8 @@ class EmailService {
      */
     def sendWpaSetConfirmation(person) {
         def email = 
-            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress)
+            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress) ?:
+            person.getAttributeValue('mail')
         if (email) {
             mailService.sendMail {
                 to email
@@ -24,7 +25,7 @@ class EmailService {
                 replyTo grailsApplication.config.grails.mail.replyTo
                 subject grailsApplication.config.myt.wpaEmailSetSubject
                 body(view:"/email/wpaSetConfirmation", 
-                      model:['person':person])
+                      model:['person':person, 'url':grailsApplication.config.grails.serverURL])
             }
         }
         else {
@@ -42,7 +43,8 @@ class EmailService {
      */
     def sendWpaDeleteConfirmation(person) {
         def email = 
-            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress)
+            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress) ?:
+            person.getAttributeValue('mail')
         if (email) {
             mailService.sendMail {
                 to email
@@ -50,7 +52,7 @@ class EmailService {
                 replyTo grailsApplication.config.grails.mail.replyTo
                 subject grailsApplication.config.myt.wpaEmailDeleteSubject
                 body(view:"/email/wpaDeleteConfirmation", 
-                      model:['person':person])
+                      model:['person':person, 'url':grailsApplication.config.grails.serverURL])
             }
         }
         else {
@@ -69,7 +71,8 @@ class EmailService {
      */
     def sendBappsSetConfirmation(person, username) {
         def email = 
-            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress)
+            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress) ?:
+            person.getAttributeValue('mail')
         if (email) {
             mailService.sendMail {
                 to email
@@ -77,7 +80,8 @@ class EmailService {
                 replyTo grailsApplication.config.grails.mail.replyTo
                 subject grailsApplication.config.myt.bAppsEmailSetSubject
                 body(view:"/email/bAppsSetConfirmation", 
-                      model:['person':person, 'username':username])
+                      model:['person':person, 'username':username,
+                       'url':grailsApplication.config.grails.serverURL])
             }
         }
         else {
@@ -94,7 +98,8 @@ class EmailService {
      */
     def sendBappsDeleteConfirmation(person, username) {
         def email = 
-            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress)
+            person.getAttributeValue(grailsApplication.config.myt.tokenLdapEmailAddress) ?:
+            person.getAttributeValue('mail')
         if (email) {
             mailService.sendMail {
                 to email
@@ -102,7 +107,8 @@ class EmailService {
                 replyTo grailsApplication.config.grails.mail.replyTo
                 subject grailsApplication.config.myt.bAppsEmailDeleteSubject
                 body(view:"/email/bAppsDeleteConfirmation", 
-                      model:['person':person, 'username':username])
+                      model:['person':person, 'username':username,
+                       'url':grailsApplication.config.grails.serverURL])
             }
         }
         else {

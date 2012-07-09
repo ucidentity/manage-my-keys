@@ -6,7 +6,6 @@
 
 <p><g:message code="bapps.index.generalMessage" /></p>
 
-
 <h3><g:message code="bapps.index.optionsHeading" /></h3>
 
 <ul class="options-list buttons">

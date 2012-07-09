@@ -4,7 +4,8 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
+grails.project.war.file = "target/${appName}-${appVersion}.war"
+//grails.project.war.file = "target/${appName}.war"
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -44,7 +45,11 @@ grails.project.dependency.resolution = {
         runtime 'com.google:google.http.client:1.9.0'
         runtime 'com.google:guava:11.0.2'
         runtime 'com.google:jsr305:305'
-        compile 'org.grails.plugins:mail:1.0'
+        
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
+            excludes "commons-logging", "xml-apis", "groovy"
+        }
+        
     }
 
     plugins {
