@@ -17,7 +17,7 @@
           <label class="control-label" for="token">Pre-Generated Key</label>
           <p><span class="token-value">${token}</span></p>
           <p><g:link action="set" id="${account.getLogin().getUserName()}" class="btn" title="Generate a different key."><i class="icon-refresh"></i> <g:message code="bapps.formPage.generateKey" /></g:link>
-          <p class="help-block"><g:message code="bapps.formPage.tokenHelpText" /></p>
+          <p class="help-block"><g:message code="bapps.formPage.keyHelpText" /></p>
         </div>
       </div>
       
@@ -31,7 +31,7 @@
             <label class="control-label" for="definedTokenConfirmation">Key Confirmation</label>
             <input type="password" id="definedTokenConfirmation" name="definedTokenConfirmation">
             </p>
-            <p class="help-block"><g:message code="bapps.formPage.tokenHelpTextForUserDefined" /></p>
+            <p class="help-block"><g:message code="bapps.formPage.keyHelpTextForUserDefined" /></p>
         </div>
       </div>
     

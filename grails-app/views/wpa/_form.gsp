@@ -9,9 +9,9 @@
               <span class="token-value">${token}</span>
             </p>
               <p>
-              <p><g:link action="set" class="btn" title="Generate a different key."><i class="icon-refresh"></i> <g:message code="wpa.formPage.generateToken" /></g:link>
+              <p><g:link action="set" class="btn" title="Generate a different key."><i class="icon-refresh"></i> <g:message code="wpa.formPage.generateKey" /></g:link>
               </p>
-              <p class="help-block"><g:message code="wpa.formPage.tokenHelpText" /></p>
+              <p class="help-block"><g:message code="wpa.formPage.keyHelpText" /></p>
     </div>
     
     <div class="form-actions">
