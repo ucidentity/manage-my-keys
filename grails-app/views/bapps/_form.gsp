@@ -14,9 +14,9 @@
       
       <div class="tab-pane active" id="pre">    
         <div class="control-group">
-          <label class="control-label" for="token">Pre-Generated Token</label>
+          <label class="control-label" for="token">Pre-Generated Key</label>
           <p><span class="token-value">${token}</span></p>
-          <p><g:link action="set" id="${account.getLogin().getUserName()}" class="btn" title="Generate a different token."><i class="icon-refresh"></i> <g:message code="bapps.formPage.generateToken" /></g:link>
+          <p><g:link action="set" id="${account.getLogin().getUserName()}" class="btn" title="Generate a different key."><i class="icon-refresh"></i> <g:message code="bapps.formPage.generateKey" /></g:link>
           <p class="help-block"><g:message code="bapps.formPage.tokenHelpText" /></p>
         </div>
       </div>
@@ -24,11 +24,11 @@
       <div class="tab-pane" id="defined">
         <div class="control-group">
             <p class="${hasErrors(bean:googleApps,field:'definedToken', 'error')}">
-            <label class="control-label" for="definedToken">Token</label>
+            <label class="control-label" for="definedToken">Key</label>
             <input type="password" id="definedToken" name="definedToken">
             </p>
             <p class="${hasErrors(bean:googleApps,field:'definedTokenConfirmation', 'error')}">
-            <label class="control-label" for="definedTokenConfirmation">Token Confirmation</label>
+            <label class="control-label" for="definedTokenConfirmation">Key Confirmation</label>
             <input type="password" id="definedTokenConfirmation" name="definedTokenConfirmation">
             </p>
             <p class="help-block"><g:message code="bapps.formPage.tokenHelpTextForUserDefined" /></p>
@@ -39,7 +39,7 @@
 </dig> <!-- End of tabbable -->
     
     <div class="form-actions">
-        <input type="submit" class="btn btn-primary" name="save" value="Set Token"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.getLogin().getUserName()}">Cancel</g:link>
+        <input type="submit" class="btn btn-primary" name="save" value="Set Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.getLogin().getUserName()}">Cancel</g:link>
     </div>
 
 </fieldset>
