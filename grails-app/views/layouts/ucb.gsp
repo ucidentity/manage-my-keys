@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>${flash.title}<g:if test="${flash.title}"> | </g:if>Manage My Tokens</title>
+    <title>${flash.title}<g:if test="${flash.title}"> | </g:if><g:message code="${controllerName}.${actionName}.title" /> | Manage My Tokens</title>
     <meta name="description" content="UCB Application-specific Token app">
     <meta name="author" content="Lucas Rockwell">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +39,9 @@
   </head>
 
   <body>
-    <a class="skip-content" href="#content">Skip to main content</a>
+    <g:unless test="${controllerName == 'auth' && actionName == 'index'}">
+        <a class="skip-content" href="#content">Skip to main content</a>
+    </g:unless>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
