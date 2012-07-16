@@ -301,8 +301,9 @@ environments {
     production {
         grails.logging.jul.usebridge = false
         
-        grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmk'
-        //grails.serverURL = 'https://idc-test.berkeley.edu/mmk'
+        //grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmk'
+        grails.serverURL = 'https://idc-test.berkeley.edu/mmk'
+        //grails.serverURL = 'https://idc.berkeley.edu/mmk'
         
         grails.mail.host = 'localhost'
         grails.mail.from = 'donotreply@berkeley.edu'
