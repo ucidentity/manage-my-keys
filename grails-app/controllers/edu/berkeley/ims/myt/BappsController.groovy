@@ -4,11 +4,13 @@ import org.springframework.web.servlet.ModelAndView
 
 class BappsController {
 
+    /* Make sure the supplied account ID is valid for this user. */    
+    def beforeInterceptor = [action:this.&accountFromId, except:['choose']]
+
     /* GrailsApplication -- needed for the config. */
     def grailsApplication
 
-    /* Make sure the supplied account ID is valid for this user. */    
-    def beforeInterceptor = [action:this.&accountFromId, except:['choose']]
+    def messageSource // inject the messageSource
 
     /* TokenService service */
     def tokenService
@@ -80,8 +82,11 @@ class BappsController {
         if (request.method == 'POST') {
             def userDefined = params.definedToken ? true : false
             if (cmd.hasErrors()) {
-                flash.title = message(code: 'bapps.alert.save.errorForTitle', 
-                    args:[currentUsername])
+                def errorsForTitle = ''
+                cmd.errors.allErrors.each { 
+                    errorsForTitle = "${errorsForTitle} ${messageSource.getMessage(it, null)}"
+                }
+                flash.title = message(code: 'bapps.alert.save.errorForTitle') + errorsForTitle
                 return new ModelAndView('/bapps/set',
                     ['token':params.token, 'account':currentAccount,
                      'googleApps':cmd, 'userDefined':userDefined])
@@ -224,22 +229,25 @@ class BappsController {
         static constraints = {
             token(blank:true,nullable:true,size:12..12, validator: {val, obj ->
                 if (val && !obj.tokenService.verifyCurrentToken(obj.session.currentToken, val)) {
-                    return 'googleAppsCommand.token.donotmatch'
+                    return 'googleAppsCommand.key.donotmatch'
                 }
             })
             definedToken(blank:true,nullable:true,size:9..255, validator: { val, obj ->
+                if (val && !obj.definedTokenConfirmation) {
+                    return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
+                }
                 if (obj.definedTokenConfirmation &&
                     obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
-                    return 'googleAppsCommand.definedToken.cannotmatchcalnet'
+                    return 'googleAppsCommand.definedKey.cannotmatchcalnet'
                 }
                 else if (obj.definedTokenConfirmation &&
                     !obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
-                    return 'googleAppsCommand.definedToken.doesnotmeetrequirements'
+                    return 'googleAppsCommand.definedKey.doesnotmeetrequirements'
                 }
             })
             definedTokenConfirmation(blank:true,nullable:true,size:9..255, validator: {val, obj ->
                 if (val && val != obj.definedToken) {
-                    return 'googleAppsCommand.definedTokenConfirmation.donotmatch'
+                    return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
                 }
             })
         }
