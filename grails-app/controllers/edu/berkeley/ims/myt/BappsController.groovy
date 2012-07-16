@@ -80,7 +80,7 @@ class BappsController {
      */
     def save(GoogleAppsCommand cmd) {
         if (request.method == 'POST') {
-            def userDefined = params.definedToken ? true : false
+            def userDefined = (params.definedToken || params.definedTokenConfirmation) ? true : false
             if (cmd.hasErrors()) {
                 def errorsForTitle = ''
                 cmd.errors.allErrors.each { 
@@ -233,16 +233,21 @@ class BappsController {
                 }
             })
             definedToken(blank:true,nullable:true,size:9..255, validator: { val, obj ->
-                if (val && !obj.definedTokenConfirmation) {
-                    return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
+                if (!val && obj.definedTokenConfirmation) {
+                    return 'googleAppsCommand.definedToken.cannotbeblank'
                 }
-                if (obj.definedTokenConfirmation &&
-                    obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
-                    return 'googleAppsCommand.definedKey.cannotmatchcalnet'
-                }
-                else if (obj.definedTokenConfirmation &&
-                    !obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
-                    return 'googleAppsCommand.definedKey.doesnotmeetrequirements'
+                else {
+                    if (val && !obj.definedTokenConfirmation) {
+                        return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
+                    }
+                    if (obj.definedTokenConfirmation &&
+                        obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
+                        return 'googleAppsCommand.definedKey.cannotmatchcalnet'
+                    }
+                    else if (obj.definedTokenConfirmation &&
+                        !obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
+                        return 'googleAppsCommand.definedKey.doesnotmeetrequirements'
+                    }
                 }
             })
             definedTokenConfirmation(blank:true,nullable:true,size:9..255, validator: {val, obj ->
