@@ -2,6 +2,8 @@
 
 <h1><g:message code="wpa.viewPage.heading" /></h1>
 
+<g:include controller="alert" action="flashSuccess" />
+
 <p>
     <g:message code="wpa.viewPage.generalMessage" />
 </p>
