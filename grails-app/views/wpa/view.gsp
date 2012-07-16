@@ -8,8 +8,9 @@
     <g:message code="wpa.viewPage.generalMessage" />
 </p>
 
-<p>
-    <div class="token-value">${token}</div>
+<h2><g:message code="general.viewPage.yourKeyIs" /></h2>
+<p class="token-value">
+    ${token}
 </p>
 
 <p><g:link controller="wpa" action="index"><g:message code="wpa.view.returnToIndexLink" /></g:link>
