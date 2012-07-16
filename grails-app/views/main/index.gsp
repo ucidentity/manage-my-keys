@@ -6,7 +6,7 @@
 <h2><g:message code="overview.optionsHeading" /></h2>
     
     <ul class="options-list buttons">
-        <li><g:link controller="wpa" action="index" class="btn"><i class="icon-signal"></i> <g:message code="overview.wpaLink" /></g:link></li>
-        <li><g:link controller="bapps" action="index" class="btn"><i class="icon-calendar"></i> <!-- <i class="icon-envelope"></i> <i class="icon-file"></i> --> <g:message code="overview.bAppsLink" /></g:link></li>
+        <li><button class="btn" title="<g:message code="overview.wpaLink" />"><g:link controller="wpa" action="index"><i class="icon-signal"></i> <g:message code="overview.wpaLink" /></g:link></button></li>
+        <li><button class="btn" title="<g:message code="overview.bAppsLink" />"><g:link controller="bapps" action="index"><i class="icon-calendar"></i> <g:message code="overview.bAppsLink" /></g:link></button></li>
     </ul>
         
