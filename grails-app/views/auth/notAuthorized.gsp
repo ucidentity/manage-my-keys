@@ -1,4 +1,4 @@
 <meta name="layout" content="ucb" />
 
-<h2>Not Authorized</h2>
+<h1>Not Authorized</h1>
 <p><g:message code="auth.notAuthorized" /></p>

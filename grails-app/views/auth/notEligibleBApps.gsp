@@ -1,4 +1,4 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="authZ.notEligibleBAppsHeader" /></h2>
+<h1><g:message code="authZ.notEligibleBAppsHeader" /></h1>
 <p><g:message code="authZ.notEligibleBAppsMessage" /></p>

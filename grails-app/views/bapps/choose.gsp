@@ -1,10 +1,10 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="bapps.choose.heading" /></h2>
+<h1><g:message code="bapps.choose.heading" /></h1>
 
 <g:include controller="alert" action="flashSuccess" />
 
-<h3>Choose Account</h3>
+<h2>Choose Account</h2>
 
 <ul class="options-list buttons">
     <g:each in="${accounts}">

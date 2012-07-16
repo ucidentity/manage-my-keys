@@ -1,9 +1,9 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="overview.welcome" /></h2>
+<h1><g:message code="overview.welcome" /></h1>
 <p><g:message code="overview.welcomeMessage" /></p>
 
-<h3><g:message code="overview.optionsHeading" /></h2>
+<h2><g:message code="overview.optionsHeading" /></h2>
     
     <ul class="options-list buttons">
         <li><g:link controller="wpa" action="index" class="btn"><i class="icon-signal"></i> <g:message code="overview.wpaLink" /></g:link></li>

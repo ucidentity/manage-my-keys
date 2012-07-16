@@ -1,7 +1,6 @@
 <meta name="layout" content="ucb" />
 
-
-<h2><g:message code="wpa.viewPage.heading" /></h2>
+<h1><g:message code="wpa.viewPage.heading" /></h1>
 
 <p>
     <g:message code="wpa.viewPage.generalMessage" />

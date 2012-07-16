@@ -1,12 +1,12 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="bapps.index.heading" args="${[account.getLogin().getUserName()]}" /></h2>
+<h1><g:message code="bapps.index.heading" args="${[account.getLogin().getUserName()]}" /></h1>
 
 <g:include controller="alert" action="flashSuccess" />
 
 <p><g:message code="bapps.index.generalMessage" /></p>
 
-<h3><g:message code="bapps.index.optionsHeading" /></h3>
+<h2><g:message code="bapps.index.optionsHeading" /></h2>
 
 <ul class="options-list buttons">
     <li><g:link controller="bapps" action="set" id="${account.getLogin().getUserName()}" title="Set key for account ${account.getLogin().getUserName()}." class="btn btn-success" href="#"><i class="icon-pencil icon-white"></i> <g:message code="bapps.index.optionsSetLink" /></g:link></li>

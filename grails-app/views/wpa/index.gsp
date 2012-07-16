@@ -1,12 +1,12 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="wpa.index.heading" /></h2>
+<h1><g:message code="wpa.index.heading" /></h1>
 
 <g:include controller="alert" action="flashSuccess" />
 
 <p><g:message code="wpa.index.generalMessage" /></p>
 
-<h3><g:message code="wpa.index.optionsHeading" /></h3>
+<h2><g:message code="wpa.index.optionsHeading" /></h2>
 
 <ul class="options-list buttons">
     <li><g:link controller="wpa" action="set" title="Set WPA key." class="btn btn-success" href="#"><i class="icon-pencil icon-white"></i> <g:message code="wpa.index.optionsSetLink" /></g:link></li>
