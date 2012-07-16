@@ -13,6 +13,6 @@
 
 <g:form action="delete" id="${account.getLogin().getUserName()}">
 <div class="form-actions">
-    <input type="submit" class="btn btn-primary" name="delete" value="Delete Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.getLogin().getUserName()}">Cancel</g:link>
+    <input type="submit" class="btn btn-primary" name="delete" value="Delete Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.getLogin().getUserName()}"><g:message code="general.returnToOptions" /></g:link>
 </div>
 </g:form>
