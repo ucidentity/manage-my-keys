@@ -4,6 +4,26 @@ body {
 
 /* Bootstrap Overrides */
 
+.btn {
+    text-align: left;
+}
+
+.btn a {
+    color: inherit;
+}
+
+.btn a:hover {
+    text-decoration: none;
+}
+
+.control-group {
+    margin-left: 10px;
+}
+
+.control-group p {
+    margin-left: -10px;
+}
+
 .row-fluid {
     
 }
@@ -100,9 +120,16 @@ footer {
 
 /* General HTML */
 
-h2 {
+h1 {
     color: #7799bb;
+    font-size: 2em;
+}
+
+h2 {
+    /* color: #7799bb; */
     /* color: #bbbbaa; */
+    color: #000000;
+    font-size: 1.4em;
 }
 
 h3 {
@@ -122,7 +149,7 @@ p {
 p.error {
     background: #FFF3F3;
     padding: 5px 5px 5px 20px;
-    margin-left: -10px;
+    margin-left: -30px;
 }
 
 p.error label {
@@ -141,6 +168,18 @@ label {
 
 form {
     margin-top: 10px;
+}
+
+li button {
+    width: 148px;
+}
+
+li button {
+    text-align: left;
+}
+
+button a {
+    display: block;
 }
 
 /* End General HTML */
@@ -183,9 +222,9 @@ form {
 }
 
 .token-value {
-    margin: 30px 0 30px 20px;
-    font-size: 2em;
+    margin: 10px 0 20px 20px;
     font-family: monospace;
+    font-size: 2em;
 }
 
 .options-list {

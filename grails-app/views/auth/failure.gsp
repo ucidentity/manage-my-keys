@@ -1,4 +1,4 @@
 <meta name="layout" content="ucb" />
 
-<h2>Authentication Failure</h2>
+<h1>Authentication Failure</h1>
 <p><g:message code="auth.failure" /></p>

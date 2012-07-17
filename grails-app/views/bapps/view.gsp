@@ -1,13 +1,15 @@
 <meta name="layout" content="ucb" />
 
-<h2><g:message code="bapps.viewPage.heading" args="${[account.getLogin().getUserName()]}" /></h2>
+<h1><g:message code="bapps.viewPage.heading" args="${[account.getLogin().getUserName()]}" /></h1>
 
 <p>
     <g:message code="bapps.viewPage.generalMessage" args="${[account.getLogin().getUserName()]}" />
 </p>
 
-<p>
-    <div class="token-value">${flash.token}</div>
+<h2><g:message code="general.viewPage.yourKeyIs" /></h2>
+
+<p class="token-value">
+    ${flash.token}
 </p>
 
 <div class="alert alert-warning">

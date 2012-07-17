@@ -1,6 +1,6 @@
 <meta name="layout" content="ucb" />
-<h2><g:message code="wpa.setPage.heading" /></h2>
-<p><g:message code="wpa.setPage.generalMessage" /></p>
+
+<h1><g:message code="wpa.setPage.heading" /></h1>
 
 <g:include controller="alert" action="formErrors" params="['item':wpa]" />
 <g:include controller="alert" action="flashError" />

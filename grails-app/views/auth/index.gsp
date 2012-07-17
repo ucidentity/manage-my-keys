@@ -1,6 +1,6 @@
 <meta name="layout" content="ucb" />
 
-<h2>Login</h2>
+<h1>Login</h1>
 <p><g:message code="auth.index" /></p>
 
 <g:form controller="auth" action="login">

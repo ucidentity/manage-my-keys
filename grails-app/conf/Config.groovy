@@ -78,8 +78,8 @@ myt.krbAuthKey = ''
 myt.gAppsPassword = '' // testg.berkeley.edu
 
 /* LDAP password. */
-//ldap.bindPassword = '' // dev
-ldap.bindPassword = '' // ucb dev, test, prod
+ldap.bindPassword = '' // dev
+//ldap.bindPassword = '' // ucb dev, test, prod
 
 /* CalNet Test ID passphrase. */
 myt.calNetTestIdPassphrase = ''
@@ -90,7 +90,7 @@ environments {
         grails.logging.jul.usebridge = true
         // Use the properties file which is defined at the top of the file.
         
-        grails.serverURL = 'http://nose10-2.local/mmt'
+        grails.serverURL = 'http://nose10-2.local/mmk'
         
         grails.mail.host = 'mail.ucsf.edu'
         grails.mail.from = 'vldappy@ucsf.edu'
@@ -195,7 +195,7 @@ environments {
         grails.logging.jul.usebridge = true
         // Use the properties file which is defined at the top of the file.
         
-        grails.serverURL = 'http://nose10-2.local/mmt'
+        grails.serverURL = 'http://nose10-2.local/mmk'
         
         grails.mail.host = 'mail.ucsf.edu'
         grails.mail.from = 'lucas.rockwell@ucsf.edu'
@@ -301,8 +301,9 @@ environments {
     production {
         grails.logging.jul.usebridge = false
         
-        grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmt'
-        //grails.serverURL = 'https://idc-test.berkeley.edu/mmt'
+        //grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmk'
+        grails.serverURL = 'https://idc-test.berkeley.edu/mmk'
+        //grails.serverURL = 'https://idc.berkeley.edu/mmk'
         
         grails.mail.host = 'localhost'
         grails.mail.from = 'donotreply@berkeley.edu'
@@ -392,9 +393,9 @@ log4j = {
     //}
     appenders {
         rollingFile name:'file', maxFileSize:10240,
-            file:'/var/log/tomcat6/mmt.log'
+            file:'/var/log/tomcat6/mmk.log'
         rollingFile name:'stacktrace', maxFileSize:10240,
-            file:'/var/log/tomcat6/mmt-stacktrace.log'
+            file:'/var/log/tomcat6/mmk-stacktrace.log'
     }
     root {
         info 'stdout', 'file'
