@@ -20,8 +20,7 @@ environments {
             driverClassName = "org.postgresql.Driver"
             dialect = 'org.hibernate.dialect.PostgreSQLDialect'
             username = 'wpa_user'
-            password = '' //  - prod, 5300 
-            //password = ''
+            password = ''
         }
         
         dataSource_calmail {
