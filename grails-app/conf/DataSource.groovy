@@ -73,7 +73,8 @@ environments {
         
         dataSource_calmail {
             dbCreate = "validate" // one of 'create', 'create-drop', 'update', 'validate', ''
-            url = "jdbc:mysql://cmdev01ws.ist.berkeley.edu:3306/calmail2?useSSL=true&verifyServerCertificate=false"
+            //url = "jdbc:mysql://cmdev01ws.ist.berkeley.edu:3306/calmail2?useSSL=true&verifyServerCertificate=false"
+            url = "jdbc:mysql://cm02adm.ist.berkeley.edu:3306/calmail?useSSL=true&verifyServerCertificate=false"
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = 'org.hibernate.dialect.MySQL5InnoDBDialect'
             username = 'calnetoken'
