@@ -167,7 +167,7 @@ label {
 }
 
 form {
-    margin-top: 10px;
+    margin: 10px 0 10px 0;
 }
 
 li button {
@@ -176,10 +176,6 @@ li button {
 
 li button {
     text-align: left;
-}
-
-button a {
-    display: block;
 }
 
 /* End General HTML */
@@ -232,7 +228,7 @@ button a {
 }
 
 .buttons li {
-    line-height: 3em;
+    /* line-height: 3em; */
 }
 
 .buttons li a {
