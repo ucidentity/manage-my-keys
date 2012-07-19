@@ -75,11 +75,10 @@ grails.mail.password = ''
 myt.krbAuthKey = ''
 
 /* Google Apps password. */
-myt.gAppsPassword = '' // testg.berkeley.edu
+myt.gAppsPassword = ''
 
 /* LDAP password. */
-ldap.bindPassword = '' // dev
-//ldap.bindPassword = '' // ucb dev, test, prod
+ldap.bindPassword = ''
 
 /* CalNet Test ID passphrase. */
 myt.calNetTestIdPassphrase = ''
@@ -302,8 +301,8 @@ environments {
         grails.logging.jul.usebridge = false
         
         //grails.serverURL = 'https://idc-d1.calnet.berkeley.edu/mmk'
-        grails.serverURL = 'https://idc-test.berkeley.edu/mmk'
-        //grails.serverURL = 'https://idc.berkeley.edu/mmk'
+        //grails.serverURL = 'https://idc-test.berkeley.edu/mmk'
+        grails.serverURL = 'https://idc.berkeley.edu/mmk'
         
         grails.mail.host = 'localhost'
         grails.mail.from = 'donotreply@berkeley.edu'
@@ -311,7 +310,8 @@ environments {
         grails.mail.port = 25
         
         /* Where the application should send the user after logout. */
-        myt.logoutURL = 'https://auth-test.berkeley.edu/cas/logout'
+        //myt.logoutURL = 'https://auth-test.berkeley.edu/cas/logout'
+        myt.logoutURL = 'https://auth.berkeley.edu/cas/logout'
 
         /* Kerberos Service app ID. */
         myt.krbAppId = 'calnettoken'
@@ -320,13 +320,15 @@ environments {
         myt.krbURL = 'https://net-auth.berkeley.edu/cgi-bin/krbservice?'
 
         /* Google Apps API URL for getting and update a user entry */
-        myt.gAppsUrl = 'https://apps-apis.google.com/a/feeds/testg.berkeley.edu/user/2.0'
+        //myt.gAppsUrl = 'https://apps-apis.google.com/a/feeds/testg.berkeley.edu/user/2.0'
+        myt.gAppsUrl = 'https://apps-apis.google.com/a/feeds/berkeley.edu/user/2.0'
         
         /* Username for the Google Apps API */
-        myt.gAppsUsername = 'tokenapp@testg.berkeley.edu'
+        myt.gAppsUsername = 'tokenapp@berkeley.edu'
         
         /* domain_id in the CalMail accounts table. */
-        myt.gAppsDomainId = 110
+        //myt.gAppsDomainId = 110
+        myt.gAppsDomainId = 1
         
         /* CalNet username attribute  */
         myt.calNetUsername = 'berkeleyEduKerberosPrincipalString'

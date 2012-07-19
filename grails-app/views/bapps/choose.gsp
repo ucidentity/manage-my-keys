@@ -8,7 +8,13 @@
 
 <ul class="options-list buttons">
     <g:each in="${accounts}">
-    <li><button class="btn" title="Choose token for account ${it.getLogin().getUserName()}."><g:link controller="bapps" action="choose" id="${it.getLogin().getUserName()}" href="#"><i class="icon-cog"></i> ${it.getLogin().getUserName()}</g:link></button></li>
+    <li>
+        <g:form controller="bapps" action="choose" id="${it.getLogin().getUserName()}" method="get" name="choose-${it.getLogin().getUserName()}">
+            <button type="submit" class="btn" title="Choose account ${it.getLogin().getUserName()}.">
+                <i class="icon-cog"></i> ${it.getLogin().getUserName()}
+            </button>
+        </g:form>
+    </li>
 </g:each>
 </ul>
 

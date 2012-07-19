@@ -11,8 +11,20 @@
 <h2><g:message code="bapps.index.optionsHeading" /></h2>
 
 <ul class="options-list buttons">
-    <li><button class="btn btn-success" title="Set key for account ${account.getLogin().getUserName()}..."><g:link controller="bapps" action="set" id="${account.getLogin().getUserName()}" href="#"><i class="icon-pencil icon-white"></i> <g:message code="bapps.index.optionsSetLink" /></g:link></button></li>
-    <li><button class="btn btn-danger" title="Delete key for account ${account.getLogin().getUserName()}..."><g:link controller="bapps" action="delete" id="${account.getLogin().getUserName()}" href="#"><i class="icon-trash icon-white"></i> <g:message code="bapps.index.optionsDeleteLink" /></g:link></button></li>
+    <li>
+        <g:form controller="bapps" action="set" id="${account.getLogin().getUserName()}" method="get" name="set">
+            <button type="submit" class="btn btn-success" title="Set bApps key for account ${account.getLogin().getUserName()}...">
+                <i class="icon-pencil icon-white"></i> <g:message code="bapps.index.optionsSetLink" />
+            </button>
+        </g:form>
+    </li>
+    <li>
+        <g:form controller="bapps" action="delete" id="${account.getLogin().getUserName()}" method="get" name="delete">
+            <button type="submit" class="btn btn-danger" title="Delete bApps key for account ${account.getLogin().getUserName()}...">
+                <i class="icon-trash icon-white"></i> <g:message code="bapps.index.optionsDeleteLink" />
+            </button>
+        </g:form>
+    </li>
 </ul>
 
 <g:if test="${session.googleAppsAccounts.size() > 1}">
