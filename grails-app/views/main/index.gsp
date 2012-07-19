@@ -6,7 +6,19 @@
 <h2><g:message code="overview.optionsHeading" /></h2>
     
     <ul class="options-list buttons">
-        <li><button class="btn" title="<g:message code="overview.wpaLink" />"><g:link controller="wpa" action="index"><i class="icon-signal"></i> <g:message code="overview.wpaLink" /></g:link></button></li>
-        <li><button class="btn" title="<g:message code="overview.bAppsLink" />"><g:link controller="bapps" action="index"><i class="icon-calendar"></i> <g:message code="overview.bAppsLink" /></g:link></button></li>
+        <li>
+            <g:form controller="wpa" action="index" method="get" name="wpa">
+                <button type="submit" class="btn">
+                    <i class="icon-signal"></i> <g:message code="overview.wpaLink" />
+                </button>
+            </g:form>
+        </li>
+        <li>
+            <g:form controller="bapps" action="index" method="get" name="bapps">
+                <button type="submit" class="btn">
+                    <i class="icon-calendar"></i> <g:message code="overview.bAppsLink" />
+                </button>
+            </g:form>
+        </li>
     </ul>
         
