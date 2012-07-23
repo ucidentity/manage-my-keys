@@ -68,8 +68,6 @@ grails.mail.disabled=false
  * often in one place, than remember to check all the envs
  * before committing and building.
  */
-/* Mail password, needed for dev only. */
-grails.mail.password = ''
 
 /* Krb Service password. */
 myt.krbAuthKey = ''
@@ -89,13 +87,14 @@ environments {
         grails.logging.jul.usebridge = true
         // Use the properties file which is defined at the top of the file.
         
-        grails.serverURL = 'http://nose10-2.local/mmk'
+        grails.serverURL = 'http://nose10-2.local:8080/mmk'
         
-        grails.mail.host = 'mail.ucsf.edu'
-        grails.mail.from = 'vldappy@ucsf.edu'
-        grails.mail.replyTo = 'donotreply@ucsf.edu.edu'
+        grails.mail.host = 'smtp.gmail.com'
+        grails.mail.from = 'ucidentity@gmail.com'
+        grails.mail.replyTo = 'ucidentity@gmail.com'
         grails.mail.port = 465
-        grails.mail.username = 'ldappys@som.ucsf.edu'
+        grails.mail.username = 'ucidentity@gmail.com'
+        grails.mail.password = ''
         grails.mail.props = [
             "mail.smtp.auth":"true",
             "mail.smtp.socketFactory.port":"465",
@@ -103,12 +102,17 @@ environments {
             "mail.smtp.socketFactory.fallback":"false"
         ]
         
+        /* This property is only in dev, and the AuthController makes sure the
+           env is 'development', so there is no worry about it being enabled in
+           production. */
+        myt.autoLoginUserAs = 'lr@lucasrockwell.com'
+        
         /* Where the application should send the user after logout. This will
            probably be the CAS logout URL, or the local Shib SP logout URL.
            http://nose10-2.local/Shibboleth.sso/Logout for dev and test
            https://auth-test.berkeley.edu/cas/logout for UCB dev and test 
            https://auth.berkeley.edu/cas/logout for UCB prod */
-        myt.logoutURL = 'http://nose10-2.local/Shibboleth.sso/Logout'
+        myt.logoutURL = ''
         
         /* Kerberos Service app ID. */
         myt.krbAppId = 'calnettoken'
@@ -394,9 +398,9 @@ log4j = {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
     appenders {
-        rollingFile name:'file', maxFileSize:10240,
+        rollingFile name:'file', maxFileSize:10485760,
             file:'/var/log/tomcat6/mmk.log'
-        rollingFile name:'stacktrace', maxFileSize:10240,
+        rollingFile name:'stacktrace', maxFileSize:10485760,
             file:'/var/log/tomcat6/mmk-stacktrace.log'
     }
     root {
