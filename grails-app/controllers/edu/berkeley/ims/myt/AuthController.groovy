@@ -47,19 +47,34 @@ class AuthController {
         }
     }
 
+    /**
+     * Sets the session and redirects to the correct location. Also checks to
+     * see if the person is a test ID, and if so, also checks to make sure
+     * test IDs are being allowed. If not, it sends the to the notAuthorized
+     * action.
+     *
+     * @param person            The person object from the directory.
+     */
     private setSessionAndRedirect(person) {
         if (person) {
-            session.person = person
-            // Get these from the session. They were set by the
-            // isAuthenticated SecurityFilter.
-            if (session.intendedController) {
-                redirect(
-                    controller:session.intendedController,
-                    action:session.intendedAction,
-                    params: session.intendedParams)
+            def isTestID = person.getAttributeValueAsBoolean(grailsApplication.config.ldap.testIdAttr)
+            if (!grailsApplication.config.myt.allowTestIds && isTestID) {
+                session?.invalidate()
+                redirect(action:'notAuthorized')
             }
             else {
-                redirect(controller:'main', action:'index')
+                session.person = person
+                // Get these from the session. They were set by the
+                // isAuthenticated SecurityFilter.
+                if (session.intendedController) {
+                    redirect(
+                        controller:session.intendedController,
+                        action:session.intendedAction,
+                        params: session.intendedParams)
+                }
+                else {
+                    redirect(controller:'main', action:'index')
+                }
             }
         }
         else {
