@@ -78,6 +78,7 @@ class AuthController {
             }
         }
         else {
+            session?.invalidate()
             redirect(action:'notAuthorized')
         }
     }
