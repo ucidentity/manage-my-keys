@@ -31,6 +31,11 @@ class CalMail {
      * Department code, which is used to determine a departmental account
      */
     String deptCode
+    
+    /*
+     * Whether or not the account is disabled.
+     */
+    Boolean loginDisabled
 
     /*
      * Table and datasouce mappings
@@ -41,6 +46,7 @@ class CalMail {
         autoTimestamp false
         table 'account'
         id name:'id'
+        //enabled type: 'yes_no' 
     }
 
     /*

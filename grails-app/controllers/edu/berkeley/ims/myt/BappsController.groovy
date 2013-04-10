@@ -21,11 +21,16 @@ class BappsController {
     /** GoogleAppsService service */
     def googleAppsService
     
+    def calMailService
+    
     /* Keeps track of the account that is set using params.id */
     def currentAccount
     
     /* Since we use this a lot, we pull it out when setting currentAccount */
     def currentUsername
+    
+    /* The underlying CalMail account for the selected account */
+    def calMailAccount
 
     /**
      * Shows the index page with the provided account. If no account
@@ -38,7 +43,7 @@ class BappsController {
      */
     def index() {
         return new ModelAndView('/bapps/index',
-            ['account':currentAccount])
+            ['account':currentAccount, calMailAccount:calMailAccount])
     }
     
     /**
@@ -205,6 +210,21 @@ class BappsController {
         
             if (!currentAccount) {
                 session.googleAppsAccounts.size() == 1 ? redirect(action:'index') : redirect(action:'choose')
+            }
+        }
+        // If the currentAccount is set, now pull out the actual account from
+        // the CalMail database
+        if (currentAccount) {
+            calMailAccount = calMailService.account(
+                session.person, currentAccount.getLogin().getUserName())
+        }
+        
+        // Now, if this is any of the actions below and the login is disabled,
+        // then we need to redirect to index.
+        if (actionName == 'set' || actionName == 'save' ||
+            actionName == 'view' || actionName == 'delete') {
+            if (calMailAccount?.loginDisabled == true) {
+                redirect(action: 'index')
             }
         }
     }
