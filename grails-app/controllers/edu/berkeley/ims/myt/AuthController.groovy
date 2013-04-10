@@ -37,6 +37,7 @@ class AuthController {
             def user = request.getHeader('REMOTE_USER') ?: request.getRemoteUser()
             if (!user) {
                 log.error "Did not get user from REMOTE_USER header..."
+                session?.invalidate()
                 redirect(action:'failure')
             }
             else {
