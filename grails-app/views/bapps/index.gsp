@@ -1,8 +1,8 @@
 <meta name="layout" content="ucb" />
 
-<h1><g:message code="bapps.index.heading" args="${[account.getLogin().getUserName()]}" /></h1>
+<h1><g:message code="bapps.index.heading" args="${[account.getPrimaryEmail()]}" /></h1>
 
-<g:if test="${calMailAccount.loginDisabled == true}">
+<g:if test="${calMailAccount?.loginDisabled == true}">
 <div class="alert alert-info">
     <h3><g:message code="bapps.index.disabledHeader" /></h3>
     <g:message code="bapps.index.disabledMessage" />
@@ -19,15 +19,15 @@
 
     <ul class="options-list buttons">
         <li>
-            <g:form controller="bapps" action="set" id="${account.getLogin().getUserName()}" method="get" name="set">
-                <button type="submit" class="btn btn-success" title="Set bConnected key for account ${account.getLogin().getUserName()}...">
+            <g:form controller="bapps" action="set" id="${account.getPrimaryEmail()}" method="get" name="set">
+                <button type="submit" class="btn btn-success" title="Set bConnected key for account ${account.getPrimaryEmail()}...">
                     <i class="icon-pencil icon-white"></i> <g:message code="bapps.index.optionsSetLink" />
                 </button>
             </g:form>
         </li>
         <li>
-            <g:form controller="bapps" action="delete" id="${account.getLogin().getUserName()}" method="get" name="delete">
-                <button type="submit" class="btn btn-danger" title="Delete bConnected key for account ${account.getLogin().getUserName()}...">
+            <g:form controller="bapps" action="delete" id="${account.getPrimaryEmail()}" method="get" name="delete">
+                <button type="submit" class="btn btn-danger" title="Delete bConnected key for account ${account.getPrimaryEmail()}...">
                     <i class="icon-trash icon-white"></i> <g:message code="bapps.index.optionsDeleteLink" />
                 </button>
             </g:form>

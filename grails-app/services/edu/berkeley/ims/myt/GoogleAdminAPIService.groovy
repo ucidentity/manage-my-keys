@@ -1,0 +1,119 @@
+package edu.berkeley.ims.myt
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.http.HttpTransport
+import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.admin.directory.Directory
+import com.google.api.services.admin.directory.DirectoryScopes
+import com.google.api.services.admin.directory.model.User
+import edu.berkeley.calnet.mmk.Password
+import org.springframework.beans.factory.InitializingBean
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+
+import java.security.KeyStore
+import java.security.PrivateKey
+
+class GoogleAdminAPIService implements InitializingBean {
+
+    def grailsApplication
+
+    private Directory directoryService
+
+    /**
+     * Get a Google User from the Admin API
+     * @param userId The users account name (user@berkeley.edu)
+     * @return The found user
+     */
+    User getUser(String userId) {
+        log.debug("Retrieving user: $userId")
+        try {
+            def user = directoryService.users().get(userId).execute()
+            log.debug("Retrieved user: $userId, $user" )
+            return user
+        } catch (e) {
+            log.warn("Failed to retrieve user: $userId: $e.message", e)
+            return null
+        }
+    }
+
+    /**
+     * Update a users password token with the Admin API
+     * @param userId The users account name (user@berkeley.edu)
+     * @param token
+     */
+    void updatePasswordToken(String userId, String token) {
+        def user = getUser(userId)
+        if(user) {
+            user.setHashFunction(Password.PASSWORD_HASH)
+            user.setPassword(Password.hash(token))
+            try {
+                directoryService.users().update(userId, user).execute()
+                log.debug("Updated user $userId password")
+            } catch (e) {
+                log.warn("Failed to update $userId password: $e.message",e)
+            }
+        } else {
+            log.warn("Could not update $userId password")
+        }
+    }
+    /**
+     * Initialize the Google Admin API Directory Service client
+     * @throws Exception if creating the api fails
+     */
+    @Override
+    void afterPropertiesSet()  {
+        try {
+            String emailAddress = adminAPIConfig.apiEmailAddress
+            String serviceAccountUser = adminAPIConfig.serviceAccountUser
+            String applicationName = adminAPIConfig.apiApplicationName
+            log.info("Initializing Google API with: $emailAddress, $serviceAccountUser, $applicationName")
+
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance()
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport()
+
+            GoogleCredential credential = new GoogleCredential.Builder()
+                    .setTransport(httpTransport)
+                    .setJsonFactory(jsonFactory)
+                    .setServiceAccountId(emailAddress)
+                    .setServiceAccountPrivateKey(privatePKCS12Key)
+                    .setServiceAccountScopes([DirectoryScopes.ADMIN_DIRECTORY_USER])
+                    .setServiceAccountUser(serviceAccountUser)
+                    .build()
+
+            // Create a new authorized API client
+            directoryService = new Directory.Builder(httpTransport, jsonFactory, credential)
+                    .setApplicationName(applicationName)
+                    .build()
+            log.info("Initializing Google API complete")
+        } catch (e) {
+            log.warn("Failed to initialize Google API",e)
+            throw e
+        }
+    }
+
+    /**
+     * Get the private key from the keystore (classpath: or file://)
+     * @return the privateKey from the keystore
+     * @throws Exception  If the keystore is not found or if the key alias or secret is wrong
+     */
+    private PrivateKey getPrivatePKCS12Key() {
+        KeyStore keystore = KeyStore.getInstance("PKCS12")
+        def keystorePath = adminAPIConfig.keystore.path as String
+        def keystoreAlias = adminAPIConfig.keystore.alias as String
+        def keystoreSecret = adminAPIConfig.keystore.secret.toString().toCharArray()
+
+        def resourceResolver = new PathMatchingResourcePatternResolver()
+        def keystoreResource = resourceResolver.getResource(keystorePath)
+        log.debug "Attempting to load Google Admin API Key from '$keystorePath'"
+        if(!keystoreResource.exists()) {
+            throw new RuntimeException("Could not find keystore at: $keystorePath")
+        }
+        keystore.load(keystoreResource.inputStream, keystoreSecret)
+        return keystore.getKey(keystoreAlias, keystoreSecret) as PrivateKey
+    }
+
+    private Map getAdminAPIConfig() {
+        grailsApplication.config.mmk.googleAdminAPI
+    }
+}

@@ -38,18 +38,14 @@ grails.project.dependency.resolution = {
         runtime 'postgresql:postgresql:9.1-901.jdbc4'
         runtime 'com.unboundid:unboundid-ldapsdk:2.3.1'
         //runtime 'org.jasig.cas:cas-client:3.1.10'
-        runtime 'com.google:gdata-appsforyourdomain:1.0'
-        runtime 'com.google:gdata.client:1.0'
-        runtime 'com.google:gdata.core:1.0'
-        runtime 'com.google:google.oauth.client:1.9.0'
-        runtime 'com.google:google.http.client:1.9.0'
-        runtime 'com.google:guava:11.0.2'
-        runtime 'com.google:jsr305:305'
+        compile 'com.google.apis:google-api-services-admin-directory:directory_v1-rev53-1.20.0'
         
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
-            excludes "commons-logging", "xml-apis", "groovy"
-        }
-        
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1')
+        compile 'commons-codec:commons-codec:1.6'
+
+        test "org.spockframework:spock-grails-support:0.7-groovy-1.8"
+        test 'org.objenesis:objenesis:1.2'
+
     }
 
     plugins {
@@ -65,5 +61,7 @@ grails.project.dependency.resolution = {
         //runtime ":yui-minify-resources:0.1.4"
 
         build ":tomcat:$grailsVersion"
+
+        test ":spock:0.7"
     }
 }

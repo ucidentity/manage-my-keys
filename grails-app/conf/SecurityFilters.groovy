@@ -1,6 +1,3 @@
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
 class SecurityFilters {
 
     /* GrailsApplication -- needed for the config. */
@@ -65,7 +62,7 @@ class SecurityFilters {
                 if (authorizationService.isAuthorizedCalMail(session.googleAppsAccounts)) {
                     return true
                 }
-                else {
+                if(!session.googleAppsAccounts) {
                     redirect(controller:'auth', action:'notEligibleBApps')
                     return false
                 }

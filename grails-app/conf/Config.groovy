@@ -1,13 +1,11 @@
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
-//grails.config.locations = [ "classpath:myt-config.properties",
-//                            "classpath:${appName}-config.groovy",
-//                            "file:${userHome}/.grails/${appName}-config.properties",
-//                            "file:${userHome}/.grails/${appName}-config.groovy"]
-
-grails.config.locations = [
-    "file:///opt/idc/conf/ManageMyTokensConfig.groovy"
+grails.config.locations = [ "classpath:myt-config.properties",
+                            "classpath:${appName}-config.groovy",
+                            "file:${userHome}/.grails/${appName}-config.properties",
+                            "file:${userHome}/.grails/${appName}-config.groovy",
+                            "file:///opt/idc/conf/ManageMyTokensConfig.groovy"
 ]
 
 // if (System.properties["${appName}.config.location"]) {

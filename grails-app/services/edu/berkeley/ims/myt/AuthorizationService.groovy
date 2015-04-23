@@ -41,10 +41,7 @@ class AuthorizationService {
      * later, and if not, then appropriate error message will be displayed at
      * that time.
      */
-    def isAuthorizedCalMail(googleAppsAccounts) {
-        if (googleAppsAccounts?.size() == 0) {
-            return false
-        }
-        return true
+    boolean isAuthorizedCalMail(googleAppsAccounts) {
+        googleAppsAccounts
     }
 }
