@@ -1,9 +1,9 @@
 <meta name="layout" content="ucb" />
 
-<h1><g:message code="bapps.viewPage.heading" args="${[account.getLogin().getUserName()]}" /></h1>
+<h1><g:message code="bapps.viewPage.heading" args="${[account.emailAddress]}" /></h1>
 
 <p>
-    <g:message code="bapps.viewPage.generalMessage" args="${[account.getLogin().getUserName()]}" />
+    <g:message code="bapps.viewPage.generalMessage" args="${[account.emailAddress]}" />
 </p>
 
 <h2><g:message code="general.viewPage.yourKeyIs" /></h2>
@@ -16,4 +16,4 @@
     <g:message code="bapps.viewPage.pageRefreshWarning" />
 </div>
 
-<p><g:link controller="bapps" action="index" id="${account.getLogin().getUserName()}"><g:message code="bapps.viewPage.returnToIndexLink" /></g:link>
+<p><g:link controller="bapps" action="index"><g:message code="bapps.viewPage.returnToIndexLink" /></g:link>

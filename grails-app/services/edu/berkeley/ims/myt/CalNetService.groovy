@@ -1,10 +1,7 @@
 package edu.berkeley.ims.myt
+import groovyx.net.http.HTTPBuilder
 
 //import grails.plugins.rest.client.RestBuilder
-
-import groovyx.net.http.HTTPBuilder
-import static groovyx.net.http.ContentType.URLENC
-
 class CalNetService {
 
     /* GrailsApplication -- needed for the config. */
@@ -19,13 +16,13 @@ class CalNetService {
      * @return true if the authN attempt is successful, and false otherwise.
      */
     def testAuthenticationFor(passphrase, person) {
-        def kps = person.getAttributeValue(grailsApplication.config.myt.calNetUsername)
+        def calnetId = person.getAttributeValue(grailsApplication.config.myt.calNetUsername)
         def url = "${grailsApplication.config.myt.krbURL}authN"
         
         def params =  [
             appid: grailsApplication.config.myt.krbAppId,
             authkey: grailsApplication.config.myt.krbAuthKey,
-            id: kps,
+            id: calnetId,
             passphrase: passphrase
         ]
         
@@ -75,26 +72,23 @@ class CalNetService {
     def validatePassphraseComplexityFor(passphrase, person) {
         
         // Get the ID and displayName of the person
-        def kps = person.getAttributeValue(grailsApplication.config.myt.calNetUsername)
+        def calnetId = person.getAttributeValue(grailsApplication.config.myt.calNetUsername)
         def displayName = person.getAttributeValue('displayName')
         
         // Make sure the ID is not contained in the passphrase
-        if (kps?.size() > 2 &&
-            passphrase?.toLowerCase().matches(/.*${kps?.toLowerCase()}.*/)) {
+        if (calnetId?.size() > 2 &&
+            passphrase?.toLowerCase().matches(/.*${calnetId?.toLowerCase()}.*/)) {
             return false
         }
         
         def names = displayName?.split(/\s/)
         def nameMatches = false
-        names.each { name ->
-            if (name?.size() > 2 && passphrase?.toLowerCase().matches(/.*${name?.toLowerCase()}.*/)) {
-                nameMatches = true
-            }
-        }
-        if (nameMatches) {
+        if(names.any { String name ->
+            name?.size() > 2 && passphrase?.toLowerCase().matches(/.*${name?.toLowerCase()}.*/)
+        }) {
             return false
         }
-        
+
         // The permutations
         def i   = ~/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,255}/
         def ii  = ~/(?=.*[a-z])(?=.*[A-Z])(?=.*\p{Punct}).{9,255}/

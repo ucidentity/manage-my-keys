@@ -1,9 +1,7 @@
 package edu.berkeley.ims.myt
 
-import grails.test.mixin.*
+import grails.test.mixin.TestFor
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.junit.*
-
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
@@ -64,11 +62,6 @@ class CalNetServiceTests extends GroovyTestCase {
         assertTrue calNetService.validatePassphraseComplexityFor('aaabbbCC2', person)
         assertTrue calNetService.validatePassphraseComplexityFor('Password1', person) // Yes, this is a valid CalNet passphrase!
         assertTrue calNetService.validatePassphraseComplexityFor('a      B1', person)
-        
-        // User with a CalNet ID with only two characters: 'lr'
-        person = ldapService.find("uid", "125236")
-        assertTrue calNetService.validatePassphraseComplexityFor('Hi there lr!', person)
-        assertTrue calNetService.validatePassphraseComplexityFor('Hi there luc!', person)
     }
     
     /**

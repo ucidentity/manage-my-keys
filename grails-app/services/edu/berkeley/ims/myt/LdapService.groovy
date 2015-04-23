@@ -1,31 +1,13 @@
 package edu.berkeley.ims.myt
-
-import java.security.GeneralSecurityException
-import java.util.LinkedList
-import java.util.ArrayList
-
-import com.unboundid.ldap.sdk.Entry
-import com.unboundid.ldap.sdk.FailoverServerSet
-import com.unboundid.ldap.sdk.Filter as LDAPFilter
-import com.unboundid.ldap.sdk.LDAPConnection
-import com.unboundid.ldap.sdk.LDAPConnectionOptions
-import com.unboundid.ldap.sdk.LDAPException
-import com.unboundid.ldap.sdk.LDAPResult
-import com.unboundid.ldap.sdk.LDAPSearchException
-import com.unboundid.ldap.sdk.Modification
-import com.unboundid.ldap.sdk.ModificationType
-import com.unboundid.ldap.sdk.ResultCode
-import com.unboundid.ldap.sdk.RoundRobinServerSet
-import com.unboundid.ldap.sdk.SearchResult
-import com.unboundid.ldap.sdk.SearchResultEntry
-import com.unboundid.ldap.sdk.SearchRequest
-import com.unboundid.ldap.sdk.SearchScope
+import com.unboundid.ldap.sdk.*
 import com.unboundid.util.ssl.SSLUtil
 import com.unboundid.util.ssl.TrustAllTrustManager
-
 import org.apache.log4j.Logger
+import org.springframework.beans.factory.InitializingBean
 
-class LdapService {
+import java.security.GeneralSecurityException
+
+class LdapService implements InitializingBean {
     
     Logger log = Logger.getLogger(LdapService.class);
     
@@ -560,5 +542,9 @@ class LdapService {
         }
         return false;
     }
-    
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        setConfig()
+    }
 }

@@ -56,16 +56,14 @@ class SecurityFilters {
          */
         isAuthorizedCalMail(controller:'bapps', action:'*') {
             before = {
-                if (!session.googleAppsAccounts) {
-                    session.googleAppsAccounts = googleAppsService.googleAppsAccounts(session.person)
+                if (!session.googleAppsAccount) {
+                    session.googleAppsAccount = googleAppsService.getGoogleAppsAccount(session.person)
                 }
-                if (authorizationService.isAuthorizedCalMail(session.googleAppsAccounts)) {
-                    return true
-                }
-                if(!session.googleAppsAccounts) {
+                if(!session.googleAppsAccount) {
                     redirect(controller:'auth', action:'notEligibleBApps')
                     return false
                 }
+                return true
             }
         }
         

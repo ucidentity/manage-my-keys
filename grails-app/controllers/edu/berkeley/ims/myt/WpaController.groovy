@@ -1,5 +1,6 @@
 package edu.berkeley.ims.myt
 
+import edu.berkeley.calnet.mmk.TokenUtil
 import org.springframework.web.servlet.ModelAndView
 
 class WpaController {
@@ -28,7 +29,7 @@ class WpaController {
      * Displays the set page with the generated token.
      */
     def set() {
-        def token = tokenService.token(8)
+        def token = TokenUtil.generateToken(8)
         session.currentToken = token
         return new ModelAndView('/wpa/set',
             ['token':token])
@@ -59,7 +60,7 @@ class WpaController {
     def save() {
         if (request.method == 'POST') {
             
-            if (!tokenService.verifyCurrentToken(session.currentToken, params.token)) {
+            if (!TokenUtil.verifyCurrentToken(session.currentToken, params.token)) {
                 flash.error = message(code: 'wpa.alert.save.canNotSetError')
                 flash.title = message(code: 'wpa.alert.save.canNotSetErrorForTitle')
                 redirect(action:'set')

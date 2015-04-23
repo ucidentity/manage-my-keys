@@ -1,1 +1,0 @@
-<g:message code="bapps.email.deleteConfirmation" args="${[person.getAttributeValue('displayName'), username, url]}" />

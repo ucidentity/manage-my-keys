@@ -1,8 +1,8 @@
 package edu.berkeley.ims.myt
 
-import com.google.api.services.admin.directory.model.User
 import com.unboundid.ldap.sdk.SearchResultEntry
-import edu.berkeley.calnet.mmk.Password
+import edu.berkeley.calnet.mmk.GoogleUser
+import edu.berkeley.calnet.mmk.TokenUtil
 
 class GoogleAppsService {
 
@@ -16,50 +16,78 @@ class GoogleAppsService {
      * @return A list of the accounts the person has. Could be none, but it will
      * still be a list.
      */
-    List<User> googleAppsAccounts(SearchResultEntry person) {
-        List<CalMail> calMailAccounts = getCalMailAccounts(person)
+    GoogleUser getGoogleAppsAccount(SearchResultEntry person) {
+        String primaryEmail = getPrimaryMailAccount(person)
 
-        return calMailAccounts.inject([]) { List<User> list, account ->
-            def gAccount = googleAdminAPIService.getUser(account.localpart)
-            if (gAccount) {
-                list.add(gAccount)
-            }
-            return list
-        }
-    }
-
-    /**
-     * Takes the passed in {@code user}, and {@code password} and sets the
-     * user's Google Apps Account password. The {@code isRandom} param is so that
-     * the logging mechanism knows whether or not this is a set by the user,
-     * or a set by the app (which is actually a delete).
-     *
-     * @param user The Google Apps user to be updated.
-     * @param password The password to set for the provided user.
-     */
-    def saveTokenForAccount(User user, String password, Boolean isGenerated, SearchResultEntry person) {
-        Long uid = person.getAttributeValueAsInteger('uid') as Long
-        log.debug("Setting password for uid: $uid ($user.getPrimaryEmail()")
-        user.setHashFunction(Password.PASSWORD_HASH)
-        user.setPassword(password)
-        googleAdminAPIService.updatePasswordToken(user.getPrimaryEmail(), user)
-        if (isGenerated) {
-            log.info("Deleted (set random) Google Apps token for: [uid: ${person.getAttributeValue('uid')}], [username: ${person.getAttributeValue(config.calNetUsername)}], [account: ${user.getLogin().getUserName()}].")
+        def user = googleAdminAPIService.getUser(primaryEmail)
+        if (user) {
+            new GoogleUser(name: user.getName().getFullName(), emailAddress: user.getPrimaryEmail())
         } else {
-            log.info("Set Google Apps token for: [uid: ${person.getAttributeValue('uid')}], [username: ${person.getAttributeValue(config.calNetUsername)}], [account: ${user.getLogin().getUserName()}].")
+            return null
         }
     }
 
     /**
-     * Get a persons Google Mail Accounts based on registrations in CalMail
+     * Takes the passed in {@code person}, and {@code token} and sets the
+     * user's Google Apps Account token. The {@code userDefined} is so that
+     * the logging mechanism knows whether or not this is a set by the user,
+     * or a set by the app.
+     *
+     * @param person The Google Apps user to be updated.
+     * @param token The token to set for the provided user.
+     * @param userDefined set by user or system (defaults to system)
+     */
+    boolean updateTokenForAccount(SearchResultEntry person, String token, Boolean userDefined = false) {
+        String primaryEmail = getPrimaryMailAccount(person)
+        Long uid = person.getAttributeValueAsInteger('uid') as Long
+
+        log.debug("Setting token for uid: $uid ($primaryEmail")
+        googleAdminAPIService.updatePasswordToken(primaryEmail, token)
+
+        def calnetId = getCalnetId(person)
+        if (userDefined) {
+            log.info("Set Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
+        } else {
+            log.info("Set Random Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
+        }
+        true
+    }
+
+    /**
+     * Takes the passed in {@code person}, sets the
+     * user's Google Apps Account token to a 30 char randomized key.
+     *
+     * @param person The Google Apps user to be updated.
+     */
+    boolean deleteTokenForAccount(SearchResultEntry person) {
+        String primaryEmail = getPrimaryMailAccount(person)
+        Long uid = person.getAttributeValueAsInteger('uid') as Long
+
+        log.debug("Setting token for uid: $uid ($primaryEmail")
+        googleAdminAPIService.updatePasswordToken(primaryEmail, TokenUtil.generateToken(30))
+
+        def calnetId = getCalnetId(person)
+        log.info("Deleted (randomized with 30 chars) Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
+        return true
+    }
+
+    /**
+     * Get the email associated with bConnected from the LDAP person logged in.
      * @param person
      * @return
      */
-    private List<CalMail> getCalMailAccounts(SearchResultEntry person) {
-        int uid = person.getAttributeValueAsInteger('uid') as Integer
-        int googleAppsDomainId = config.gAppsDomainId as Integer
-        def calMailAccounts = CalMail.findAllByOwnerUidAndDomainId(uid, googleAppsDomainId)
-        calMailAccounts
+    private String getPrimaryMailAccount(SearchResultEntry person) {
+        person.getAttributeValue(config.berkeleyEduAlternateID as String)
+    }
+
+    /**
+     * Get the calnetId associated with bConnected from the LDAP person logged in.
+     * @param person
+     * @return
+     */
+    private String getCalnetId(SearchResultEntry person) {
+        String calnetIdKey = config.calNetUsername
+        person.getAttributeValue(calnetIdKey)
     }
 
 

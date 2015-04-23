@@ -1,10 +1,7 @@
 package edu.berkeley.ims.myt
 
-
-import grails.test.mixin.*
+import grails.test.mixin.TestFor
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.junit.*
-
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
@@ -34,7 +31,7 @@ class BappsControllerTests extends GroovyTestCase {
         def person = ldapService.findByEppn("lr@lucasrockwell.com")
         
         def accounts = googleAppsService.googleAppsAccounts(person)
-        session.googleAppsAccounts = accounts
+        session.googleAppsAccount = accounts
         println controller.accountFromId()
         //assert response.redirectedUrl == '/auth/notEligibleBApps'
     }

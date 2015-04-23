@@ -72,14 +72,17 @@ grails.hibernate.cache.queries = true
 environments {
     development {
         grails.logging.jul.usebridge = true
+        grails.mail.port = com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
         
     }
     test {
+        grails.mail.port = com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
     }
     production {
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
+        greenmail.disabled=true
     }
     
 }

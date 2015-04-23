@@ -1,32 +1,21 @@
 package edu.berkeley.ims.myt
 
-class BappsController {
+import com.unboundid.ldap.sdk.SearchResultEntry
+import edu.berkeley.calnet.mmk.GoogleUser
+import edu.berkeley.calnet.mmk.TokenUtil
+import grails.converters.JSON
 
-    /* Make sure the supplied account ID is valid for this user. */
-    def beforeInterceptor = [action: this.&accountFromId, except: ['choose']]
+class BappsController {
+    static allowedMethods = [save: 'POST']
 
     /* GrailsApplication -- needed for the config. */
     def grailsApplication
-
-    /* TokenService service */
-    def tokenService
 
     /* EmailService service */
     def emailService
 
     /** GoogleAppsService service */
     def googleAppsService
-
-    def calMailService
-
-    /* Keeps track of the account that is set using params.id */
-    def currentAccount
-
-    /* Since we use this a lot, we pull it out when setting currentAccount */
-    def currentUsername
-
-    /* The underlying CalMail account for the selected account */
-    def calMailAccount
 
     /**
      * Shows the index page with the provided account. If no account
@@ -38,24 +27,8 @@ class BappsController {
      * so we can assume that if it is not set here, the user needs to choose.
      */
     def index() {
-        ['account': currentAccount, calMailAccount: calMailAccount]
-    }
-
-    /**
-     * Shows a list of IDs for the person to choose. If an ID has been chosen,
-     * i.e., params.id will be set, then it redirects to 'index' with that
-     * account set as the id.
-     */
-    def choose() {
-        if (session.googleAppsAccounts?.size() == 1) {
-            redirect(action: 'index')
-        }
-
-        if (params.id) {
-            redirect(action: 'index', id: params.id)
-        } else {
-            ['accounts': session.googleAppsAccounts]
-        }
+        GoogleUser currentAccount = googleAppsService.getGoogleAppsAccount(session.person)
+        ['account': currentAccount]
     }
 
     /**
@@ -65,10 +38,12 @@ class BappsController {
         // You can not get this from the config because the GoogleAppsCommand
         // also needs to know about the token length, and you can't inject that
         // into the CommandObject.
-        //def token = tokenService.token(grailsApplication.config.myt.bAppsTokenLength.toInteger())
-        def token = tokenService.token(12)
-        session.currentToken = token
-        ['token': token, 'account': currentAccount]
+        GoogleUser currentAccount = googleAppsService.getGoogleAppsAccount(session.person)
+        [account: currentAccount, userDefined: false]
+    }
+
+    def generateToken() {
+        render([token: TokenUtil.generateToken(12)] as JSON)
     }
 
     /**
@@ -76,36 +51,31 @@ class BappsController {
      * and inner class defined at the bottom of this class.
      */
     def save(GoogleAppsCommand cmd) {
-        if (request.method == 'POST') {
-            def userDefined = (params.definedToken || params.definedTokenConfirmation) ? true : false
-            if (cmd.hasErrors()) {
-                def errorsForTitle = cmd.errors.allErrors.collect { "${g.message(error: it)}" }.join(' ')
-                flash.title = "${message(code: 'bapps.alert.save.errorForTitle')}$errorsForTitle"
-                render(view: 'set', model: ['token': params.token, 'account': currentAccount, 'googleApps': cmd, 'userDefined': userDefined])
-                return
-            } else {
-                def result = googleAppsService.saveTokenForAccount(currentAccount, params.definedToken ?: params.token, false, session.person)
-                if (result.size() == 0) {
-                    emailService.sendBappsSetConfirmation(session.person, currentUsername)
-                    if (params.definedToken) {
-                        flash.success = message(code: 'bapps.alert.save.success', args: [currentUsername])
-                        flash.title = message(code: 'bapps.alert.save.successForTitleDefined', args: [currentUsername])
-                        // Redirect to either index or choose...
-                        redirect(action: session.googleAppsAccounts.size() == 1 ? 'index' : 'choose')
-                    } else {
-                        flash.token = params.definedToken ?: params.token
-                        flash.title = message(code: 'bapps.alert.save.successForTitleGenerated', args: [currentUsername])
-                        redirect(action: 'view', id: params.id)
-                    }
+
+        GoogleUser currentAccount = googleAppsService.getGoogleAppsAccount(person)
+        if (cmd.hasErrors()) {
+            def errorsForTitle = cmd.errors.allErrors.collect { "${g.message(error: it)}" }.join(' ')
+            flash.title = "${message(code: 'bapps.alert.save.errorForTitle')}$errorsForTitle"
+            render(view: 'set', model: ['token': params.token, 'account': currentAccount, 'googleApps': cmd, 'userDefined': cmd.userDefined])
+        } else {
+            def result = googleAppsService.updateTokenForAccount(person, cmd.token, cmd.userDefined)
+            if (result) {
+                emailService.sendBappsSetConfirmation(currentAccount)
+                if (cmd.userDefined) {
+                    flash.success = message(code: 'bapps.alert.save.success', args: [currentAccount.emailAddress])
+                    flash.title = message(code: 'bapps.alert.save.successForTitleDefined', args: [currentAccount.emailAddress])
+                    // Redirect to either index or choose...
+                    redirect(action: 'index')
                 } else {
-                    flash.error = result.error
-                    flash.title = result.error
-                    render(view: 'set', model: ['token': params.token, 'account': currentAccount, 'googleApps': cmd, 'userDefined': userDefined])
-                    return
+                    flash.token = params.definedToken ?: params.token
+                    flash.title = message(code: 'bapps.alert.save.successForTitleGenerated', args: [currentAccount.emailAddress])
+                    redirect(action: 'view', id: params.id)
                 }
+            } else {
+                flash.error = message(code: 'bapps.alert.save.failed', args: [currentAccount.emailAddress])
+                flash.title = message(code: 'bapps.alert.save.failedTitle', args: [currentAccount.emailAddress])
+                render(view: 'set', model: ['token': params.token, 'account': currentAccount, 'googleApps': cmd, 'userDefined': cmd.userDefined])
             }
-        } else if (currentAccount) {
-            redirect(action: 'index')
         }
         // The final else would have already been handled by accountFromId()
     }
@@ -114,6 +84,7 @@ class BappsController {
      * Displays the token if the user chooses the pre-generated token.
      */
     def view() {
+        GoogleUser currentAccount = googleAppsService.getGoogleAppsAccount(person)
         if (!flash.token && currentAccount) {
             redirect(action: 'index')
         } else {
@@ -130,67 +101,24 @@ class BappsController {
      * random, 30 character string.
      */
     def delete() {
-        if (request.method == 'POST') {
-            def result = googleAppsService.saveTokenForAccount(
-                    currentAccount, tokenService.token(30), true, session.person)
-
-            if (result.size() == 0) {
-                emailService.sendBappsDeleteConfirmation(session.person, currentUsername)
-                flash.success = message(code: 'bapps.alert.delete.success', args: [currentUsername])
-                flash.title = message(code: 'bapps.alert.delete.successForTitle', args: [currentUsername])
-
-                // Redirect to either index or choose...
-                redirect(action: session.googleAppsAccounts.size() == 1 ? 'index' : 'choose')
-                return
-            } else {
-                flash.error = result.error
-                flash.title = result.error
-                ['account': currentAccount]
-            }
-        } else {
-            ['account': currentAccount]
-        }
-    }
-
-    /**
-     * Checks to see if the supplied ID is valid for the logged in user.
-     * If not, then it either sends the user to the index or choose page,
-     * depending on whether or not the user has one or more Google accounts.
-     *
-     * It keeps the user in the bApps section because if the user was not
-     * authorized to be in the section at all, the user would have been stopped
-     * by the SecurityFilters.
-     */
-    protected accountFromId() {
-        // Only do this if the user has any Google apps. If not, then the
-        // SecurityFilter will pick it up.
-        if (session.googleAppsAccounts) {
-            if (params.id) {
-                session.googleAppsAccounts.each {
-                    if (it.getPrimaryEmail() == params.id) {
-                        currentAccount = it
-                        currentUsername = it.getPrimaryEmail()
-                    }
-                }
-            } else if (session.googleAppsAccounts.size() == 1) {
-                currentAccount = session.googleAppsAccounts[0]
-                currentUsername = currentAccount.getPrimaryEmail()
-            }
-
-            if (!currentAccount) {
-                session.googleAppsAccounts.size() == 1 ? redirect(action: 'index') : redirect(action: 'choose')
-            }
-        }
-        // If the currentAccount is set, now pull out the actual account from
-        // the CalMail database
-        if (currentAccount) {
-            calMailAccount = calMailService.account(session.person, currentAccount.getPrimaryEmail())
+        GoogleUser currentAccount = googleAppsService.getGoogleAppsAccount(person)
+        if(request.method == 'GET') {
+            return [account: currentAccount]
         }
 
-        // Now, if this is any of the actions below and the login is disabled,
-        // then we need to redirect to index.
-        if (actionName in ['set', 'save', 'view', 'delete'] && calMailAccount?.loginDisabled == true) {
+        def result = googleAppsService.deleteTokenForAccount(person)
+
+
+        if (result) {
+            emailService.sendBappsDeleteConfirmation(currentAccount)
+            flash.success = message(code: 'bapps.alert.delete.success', args: [currentAccount.emailAddress])
+            flash.title = message(code: 'bapps.alert.delete.successForTitle', args: [currentAccount.emailAddress])
+
             redirect(action: 'index')
+        } else {
+            flash.error = message(code: 'bapps.alert.delete.failed', args: [currentAccount.emailAddress])
+            flash.title = message(code: 'bapps.alert.delete.failedTitle', args: [currentAccount.emailAddress])
+            [account: currentAccount]
         }
     }
 
@@ -199,47 +127,32 @@ class BappsController {
      */
     class GoogleAppsCommand {
 
-        /* TokenService service */
-        def tokenService
-
         /* CalNetService service */
         def calNetService
 
+        boolean userDefined
         String token
-
-        String definedToken
-
-        String definedTokenConfirmation
+        String tokenRepeat
 
         static constraints = {
-            token(blank: true, nullable: true, size: 12..12, validator: { val, obj ->
-                if (val && !obj.tokenService.verifyCurrentToken(obj.session.currentToken, val)) {
-                    return 'googleAppsCommand.key.donotmatch'
+            token(nullable: false, size: 9..255, validator: { val, obj ->
+                if (obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
+                    return 'cannotmatchcalnet'
+                }
+                if (!obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
+                    return 'doesnotmeetrequirements'
                 }
             })
-            definedToken(blank: true, nullable: true, size: 9..255, validator: { val, obj ->
-                if (!val && obj.definedTokenConfirmation) {
-                    return 'googleAppsCommand.definedToken.cannotbeblank'
-                } else {
-                    if (val && !obj.definedTokenConfirmation) {
-                        return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
-                    }
-                    if (obj.definedTokenConfirmation &&
-                            obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
-                        return 'googleAppsCommand.definedKey.cannotmatchcalnet'
-                    } else if (obj.definedTokenConfirmation &&
-                            !obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
-                        return 'googleAppsCommand.definedKey.doesnotmeetrequirements'
-                    }
-                }
-            })
-            definedTokenConfirmation(blank: true, nullable: true, size: 9..255, validator: { val, obj ->
-                if (val && val != obj.definedToken) {
-                    return 'googleAppsCommand.definedKeyConfirmation.donotmatch'
+            tokenRepeat(validator: { val, obj ->
+                if (val != obj.token) {
+                    return 'donotmatch'
                 }
             })
         }
+    }
 
+    private SearchResultEntry getPerson() {
+        session.person
     }
 
 }
