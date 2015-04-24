@@ -43,7 +43,8 @@ class BappsController {
     }
 
     def generateToken() {
-        render([token: TokenUtil.generateToken(12)] as JSON)
+        int tokenLength = grailsApplication.config.myt.bAppsTokenLength
+        render([token: TokenUtil.generateToken(tokenLength)] as JSON)
     }
 
     /**

@@ -1,11 +1,10 @@
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
-grails.config.locations = [ "classpath:myt-config.properties",
-                            "classpath:${appName}-config.groovy",
+grails.config.locations = [ "classpath:${appName}-config.groovy",
                             "file:${userHome}/.grails/${appName}-config.properties",
                             "file:${userHome}/.grails/${appName}-config.groovy",
-                            "file:///opt/idc/conf/ManageMyTokensConfig.groovy"
+                            "file:///opt/idc/conf/mmk-config.groovy"
 ]
 
 // if (System.properties["${appName}.config.location"]) {
@@ -85,6 +84,14 @@ environments {
         greenmail.disabled=true
     }
     
+}
+
+grails.cache.config = {
+    cache {
+        name 'googleUser'
+        eternal false
+        timeToLiveSeconds 3600
+    }
 }
 
 // log4j configuration is external, too.

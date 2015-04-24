@@ -8,6 +8,8 @@ import com.google.api.services.admin.directory.Directory
 import com.google.api.services.admin.directory.DirectoryScopes
 import com.google.api.services.admin.directory.model.User
 import edu.berkeley.calnet.mmk.Password
+import grails.plugin.cache.CacheEvict
+import grails.plugin.cache.Cacheable
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
@@ -25,10 +27,15 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @return The found user
      */
+    @Cacheable('gooleUser')
     User getUser(String userId) {
         log.debug("Retrieving user: $userId")
         try {
             def user = directoryService.users().get(userId).execute()
+            if(user?.suspended) {
+                log.warn("The Retrieved user is suspended: $userId, $user")
+                return null
+            }
             log.debug("Retrieved user: $userId, $user" )
             return user
         } catch (e) {
@@ -42,6 +49,7 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @param token
      */
+    @CacheEvict(value='googleUser', key='#userId')
     void updatePasswordToken(String userId, String token) {
         def user = getUser(userId)
         if(user) {
