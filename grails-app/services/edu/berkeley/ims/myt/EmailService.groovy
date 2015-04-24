@@ -1,5 +1,6 @@
 package edu.berkeley.ims.myt
 
+import com.unboundid.ldap.sdk.SearchResultEntry
 import edu.berkeley.calnet.mmk.GoogleUser
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.codehaus.groovy.grails.web.util.WebUtils
@@ -19,12 +20,13 @@ class EmailService {
      *
      * @param person           The person to who the email should be sent.
      */
-    def sendWpaSetConfirmation(person) {
+    def sendWpaSetConfirmation(SearchResultEntry person) {
         String email = getEmailAddress(person)
         if (email) {
             def personName = getPersonName(person)
-            def message = getMessage('wpa.email.setConfirmation', personName, serverUrl)
-            sendMail(email, config.myt.wpaEmailSetSubject, message)
+            def subject = getMessage('wpa.email.setConfirmation.subject')
+            def message = getMessage('wpa.email.setConfirmation.body', personName, serverUrl)
+            sendMail(email, subject, message)
         }
         else {
             def username = person.getAttributeValue(config.myt.wpaTokenLdapUsername)
@@ -38,12 +40,13 @@ class EmailService {
      *
      * @param person           The person to who the email should be sent.
      */
-    def sendWpaDeleteConfirmation(person) {
+    def sendWpaDeleteConfirmation(SearchResultEntry person) {
         String email = getEmailAddress(person)
         if (email) {
             def personName = getPersonName(person)
-            def message = getMessage('wpa.email.deleteConfirmation', personName, serverUrl)
-            sendMail(email, config.myt.wpaEmailDeleteSubject, message)
+            def subject = getMessage('wpa.email.deleteConfirmation.subject')
+            def message = getMessage('wpa.email.deleteConfirmation.body', personName, serverUrl)
+            sendMail(email, subject, message)
         }
         else {
             def username = person.getAttributeValue(config.myt.wpaTokenLdapUsername)
@@ -58,7 +61,8 @@ class EmailService {
      * @param googleUser   Name and google email address.
      */
     def sendBappsSetConfirmation(GoogleUser googleUser) {
-        def message = getMessage('bapps.email.setConfirmation',googleUser.name, googleUser.emailAddress, serverUrl)
+        def subject = getMessage('bapps.email.setConfirmation.subject')
+        def message = getMessage('bapps.email.setConfirmation.body',googleUser.name, googleUser.emailAddress, serverUrl)
         sendMail(googleUser.emailAddress, config.myt.bAppsEmailSetSubject, message)
     }
 
@@ -70,14 +74,15 @@ class EmailService {
      * @param username          The email for which the token was deleted.
      */
     def sendBappsDeleteConfirmation(GoogleUser googleUser) {
-        def message = getMessage('bapps.email.deleteConfirmation', googleUser.name, googleUser.emailAddress, serverUrl)
-        sendMail(googleUser.emailAddress, config.myt.bAppsEmailDeleteSubject, message)
+        def subject = getMessage('bapps.email.deleteConfirmation.subject')
+        def message = getMessage('bapps.email.deleteConfirmation.body', googleUser.name, googleUser.emailAddress, serverUrl)
+        sendMail(googleUser.emailAddress, subject, message)
     }
-    private String getEmailAddress(person) {
+    private String getEmailAddress(SearchResultEntry person) {
         person.getAttributeValue(config.myt.tokenLdapEmailAddress) ?:person.getAttributeValue('mail')
     }
 
-    String getPersonName(def person) {
+    String getPersonName(SearchResultEntry person) {
         person.getAttributeValue('displayName')
     }
 
@@ -95,7 +100,7 @@ class EmailService {
             from config.grails.mail.from
             replyTo config.grails.mail.replyTo
             subject title
-            html(text)
+            body(text)
         }
     }
 

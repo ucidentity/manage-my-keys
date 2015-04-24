@@ -18,7 +18,7 @@ class GoogleAppsService {
      */
     GoogleUser getGoogleAppsAccount(SearchResultEntry person) {
         String primaryEmail = getPrimaryMailAccount(person)
-
+        log.debug("Searching for $primaryEmail in the Google API")
         def user = googleAdminAPIService.getUser(primaryEmail)
         if (user) {
             new GoogleUser(name: user.getName().getFullName(), emailAddress: user.getPrimaryEmail())

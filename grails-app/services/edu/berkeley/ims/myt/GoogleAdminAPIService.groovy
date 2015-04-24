@@ -110,10 +110,9 @@ class GoogleAdminAPIService implements InitializingBean {
         def keystorePath = adminAPIConfig.keystore.path as String
         def keystoreAlias = adminAPIConfig.keystore.alias as String
         def keystoreSecret = adminAPIConfig.keystore.secret.toString().toCharArray()
-
         def resourceResolver = new PathMatchingResourcePatternResolver()
         def keystoreResource = resourceResolver.getResource(keystorePath)
-        log.debug "Attempting to load Google Admin API Key from '$keystorePath'"
+        log.info "Attempting to load Google Admin API Key from '$keystorePath'"
         if(!keystoreResource.exists()) {
             throw new RuntimeException("Could not find keystore at: $keystorePath")
         }
