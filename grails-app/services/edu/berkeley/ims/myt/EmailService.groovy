@@ -102,6 +102,7 @@ class EmailService {
             subject title
             body(text)
         }
+        log.debug("Mail sent to $email with title $title")
     }
 
     private getMessage(String code, Object... args) {

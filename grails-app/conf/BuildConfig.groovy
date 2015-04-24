@@ -11,7 +11,6 @@ grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
-        excludes "commons-logging"
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
@@ -40,9 +39,8 @@ grails.project.dependency.resolution = {
         //runtime 'org.jasig.cas:cas-client:3.1.10'
         compile 'com.google.apis:google-api-services-admin-directory:directory_v1-rev53-1.20.0'
         
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1') {
-            excludes "commons-logging", "httpclient", "xml-apis", "groovy", "groovy-all", "xercesImpl", "nekohtml"
-        }
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1')
+
         compile 'commons-codec:commons-codec:1.6'
 
         test "org.spockframework:spock-grails-support:0.7-groovy-1.8"
@@ -71,5 +69,12 @@ grails.project.dependency.resolution = {
         build ":tomcat:$grailsVersion"
 
         test ":spock:0.7"
+    }
+}
+
+grails.war.resources = { File stagingDir ->
+    def libs = new File(stagingDir, '/WEB-INF/lib')
+    libs.eachFileMatch(~/^commons-logging.*\.jar$/) { File jar ->
+        delete(file: jar.absolutePath)
     }
 }
