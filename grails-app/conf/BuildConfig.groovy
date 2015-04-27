@@ -54,7 +54,7 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
-        compile ":cache:1.1.5"
+        compile ":cache:1.1.6"
         compile (":cache-ehcache:1.0.1") {
             excludes  'cache'
         }

@@ -1,4 +1,5 @@
 package edu.berkeley.ims.myt
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.HttpTransport
@@ -7,16 +8,20 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.admin.directory.Directory
 import com.google.api.services.admin.directory.DirectoryScopes
 import com.google.api.services.admin.directory.model.User
-import edu.berkeley.calnet.mmk.Password
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.Cacheable
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
+import javax.xml.bind.DatatypeConverter
 import java.security.KeyStore
+import java.security.MessageDigest
 import java.security.PrivateKey
 
 class GoogleAdminAPIService implements InitializingBean {
+
+    private static final String MD5 = "MD5"
+
 
     def grailsApplication
 
@@ -32,11 +37,11 @@ class GoogleAdminAPIService implements InitializingBean {
         log.debug("Retrieving user: $userId")
         try {
             def user = directoryService.users().get(userId).execute()
-            if(user?.suspended) {
+            if (user?.suspended) {
                 log.warn("The Retrieved user is suspended: $userId, $user")
                 return null
             }
-            log.debug("Retrieved user: $userId, $user" )
+            log.debug("Retrieved user: $userId, $user")
             return user
         } catch (e) {
             log.warn("Failed to retrieve user: $userId: $e.message", e)
@@ -49,17 +54,21 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @param token
      */
-    @CacheEvict(value='googleUser', key='#userId')
+    @CacheEvict(value = 'googleUser', key = '#userId')
     void updatePasswordToken(String userId, String token) {
         def user = getUser(userId)
-        if(user) {
-            user.setHashFunction(Password.PASSWORD_HASH)
-            user.setPassword(Password.hash(token))
+        if (user) {
+
+            MessageDigest md = MessageDigest.getInstance(MD5);
+            byte[] digested = md.digest(token.getBytes("UTF-8"));
+            def newToken = DatatypeConverter.printHexBinary(digested);
+
+            user.setHashFunction(MD5).setPassword(newToken)
             try {
                 directoryService.users().update(userId, user).execute()
                 log.debug("Updated user $userId password")
             } catch (e) {
-                log.warn("Failed to update $userId password: $e.message",e)
+                log.warn("Failed to update $userId password: $e.message", e)
             }
         } else {
             log.warn("Could not update $userId password")
@@ -70,7 +79,7 @@ class GoogleAdminAPIService implements InitializingBean {
      * @throws Exception if creating the api fails
      */
     @Override
-    void afterPropertiesSet()  {
+    void afterPropertiesSet() {
         try {
             String emailAddress = adminAPIConfig.apiEmailAddress
             String serviceAccountUser = adminAPIConfig.serviceAccountUser
@@ -95,7 +104,7 @@ class GoogleAdminAPIService implements InitializingBean {
                     .build()
             log.info("Initializing Google API complete")
         } catch (e) {
-            log.warn("Failed to initialize Google API",e)
+            log.warn("Failed to initialize Google API", e)
             throw e
         }
     }
@@ -113,7 +122,7 @@ class GoogleAdminAPIService implements InitializingBean {
         def resourceResolver = new PathMatchingResourcePatternResolver()
         def keystoreResource = resourceResolver.getResource(keystorePath)
         log.info "Attempting to load Google Admin API Key from '$keystorePath'"
-        if(!keystoreResource.exists()) {
+        if (!keystoreResource.exists()) {
             throw new RuntimeException("Could not find keystore at: $keystorePath")
         }
         keystore.load(keystoreResource.inputStream, keystoreSecret)

@@ -1,5 +1,4 @@
 package edu.berkeley.ims.myt
-
 import com.unboundid.ldap.sdk.SearchResultEntry
 import edu.berkeley.calnet.mmk.GoogleUser
 import edu.berkeley.calnet.mmk.TokenUtil
