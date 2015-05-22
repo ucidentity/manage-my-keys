@@ -21,10 +21,6 @@ class BappsControllerTests extends GroovyTestCase {
         
     }
 
-    void testOneAccount() {
-        //def bApps = new BappsController()
-        //assert bApps.response.redirectedUrl == '/auth/index'
-    }
     
     void testMoreThanOneAccount() {
         setUp()

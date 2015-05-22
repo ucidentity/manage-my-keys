@@ -6,7 +6,7 @@ import spock.lang.Unroll
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-class TokenServiceTests extends Specification{
+class TokenUtilSpec extends Specification{
 
     @Unroll
     void testTokenLength() {
