@@ -11,7 +11,6 @@ grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
-        // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
@@ -38,26 +37,29 @@ grails.project.dependency.resolution = {
         runtime 'postgresql:postgresql:9.1-901.jdbc4'
         runtime 'com.unboundid:unboundid-ldapsdk:2.3.1'
         //runtime 'org.jasig.cas:cas-client:3.1.10'
-        runtime 'com.google:gdata-appsforyourdomain:1.0'
-        runtime 'com.google:gdata.client:1.0'
-        runtime 'com.google:gdata.core:1.0'
-        runtime 'com.google:google.oauth.client:1.9.0'
-        runtime 'com.google:google.http.client:1.9.0'
-        runtime 'com.google:guava:11.0.2'
-        runtime 'com.google:jsr305:305'
+        compile 'com.google.apis:google-api-services-admin-directory:directory_v1-rev53-1.20.0'
         
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
-            excludes "commons-logging", "xml-apis", "groovy"
-        }
-        
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1')
+
+        compile 'commons-codec:commons-codec:1.6'
+
+        test "org.spockframework:spock-grails-support:0.7-groovy-1.8"
+        test 'org.objenesis:objenesis:1.2'
+
     }
 
     plugins {
-        compile ":mail:1.0"
+        compile ":mail:1.0.7"
         
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
+        compile ":cache:1.1.6"
+        compile (":cache-ehcache:1.0.1") {
+            excludes  'cache'
+        }
+
+        compile ":greenmail:1.3.4"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
@@ -65,5 +67,14 @@ grails.project.dependency.resolution = {
         //runtime ":yui-minify-resources:0.1.4"
 
         build ":tomcat:$grailsVersion"
+
+        test ":spock:0.7"
+    }
+}
+
+grails.war.resources = { File stagingDir ->
+    def libs = new File(stagingDir, '/WEB-INF/lib')
+    libs.eachFileMatch(~/^commons-logging.*\.jar$/) { File jar ->
+        delete(file: jar.absolutePath)
     }
 }

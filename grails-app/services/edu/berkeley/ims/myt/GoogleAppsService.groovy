@@ -1,164 +1,97 @@
 package edu.berkeley.ims.myt
-
-import com.google.api.client.auth.oauth2.Credential
-import com.google.api.client.http.HttpExecuteInterceptor
-import com.google.gdata.client.appsforyourdomain.UserService
-import com.google.gdata.data.Link
-import com.google.gdata.data.extensions.FeedLink
-import com.google.gdata.data.appsforyourdomain.AppsForYourDomainException
-import com.google.gdata.data.appsforyourdomain.provisioning.UserEntry
-import com.google.gdata.util.InvalidEntryException
-import com.google.gdata.util.ServiceException
-
-import java.io.IOException
-import java.net.URL
-import java.security.MessageDigest
+import com.unboundid.ldap.sdk.SearchResultEntry
+import edu.berkeley.calnet.mmk.GoogleUser
+import edu.berkeley.calnet.mmk.TokenUtil
 
 class GoogleAppsService {
 
     def grailsApplication
-    
-    def pwdHashFunction = 'SHA-1'
-    
-    //private UserService userService
+    def googleAdminAPIService
 
     /**
      * Returns all of the Google Apps accounts for the passed in person.
      *
-     * @param person        UnboundID LDAP SDK person
+     * @param person UnboundID LDAP SDK person
      * @return A list of the accounts the person has. Could be none, but it will
      * still be a list.
      */
-    def googleAppsAccounts(person) {
-        def uid = person.getAttributeValueAsInteger('uid')
-        
-        def calMailAccounts = CalMail.findAllByOwnerUidAndDomainId(
-            uid, 
-            grailsApplication.config.myt.gAppsDomainId)
-
-        def gAppsAccounts = []
-        if (calMailAccounts) {
-            calMailAccounts.each { account ->
-                def gAccount = googleAppsAccountFor(account.localpart) 
-                if (gAccount) {
-                    gAppsAccounts.add(gAccount)
-                }
-            }
-        }
-        return gAppsAccounts
-    }
-
-    /**
-     * Gets the Google Apps entry for the provided {@code username}.
-     *
-     * @param username          The username of the Google Apps account.
-     * @return The Google Apps account if one exists, and {@code null} if not.
-     */
-    def googleAppsAccountFor(String username) {
-        URL retrieveUrl = 
-            new URL("${grailsApplication.config.myt.gAppsUrl}/${username}")
-        try {
-            UserEntry entry = userService().getEntry(retrieveUrl, UserEntry.class)
-            if (entry.getLogin().getSuspended() == true) {
-                return null
-            }
-            else {
-                return entry
-            }
-        }
-        catch (AppsForYourDomainException e) {
-            log.info("Apps exception: ${e.toString()}")
+    GoogleUser getGoogleAppsAccount(SearchResultEntry person) {
+        String primaryEmail = getPrimaryMailAccount(person)
+        log.debug("Searching for $primaryEmail in the Google API")
+        def user = googleAdminAPIService.getUser(primaryEmail)
+        if (user) {
+            new GoogleUser(name: user.getName().getFullName(), emailAddress: user.getPrimaryEmail())
+        } else {
             return null
         }
     }
-    
+
     /**
-     * Takes the passed in {@code entry}, and {@code password} and sets the
-     * user's Gapps Account password. The {@code isRandom} param is so that
+     * Takes the passed in {@code person}, and {@code token} and sets the
+     * user's Google Apps Account token. The {@code userDefined} is so that
      * the logging mechanism knows whether or not this is a set by the user,
-     * or a set by the app (which is actually a delete).
+     * or a set by the app.
      *
-     * @param entry         The Google Apps entry to be updated.
-     * @param password      The password to set for the provided entry.
+     * @param person The Google Apps user to be updated.
+     * @param token The token to set for the provided user.
+     * @param userDefined set by user or system (defaults to system)
      */
-    def saveTokenForAccount(UserEntry entry, String password,
-        Boolean isGenerated, person) throws Exception {
-        try {
-            entry.getLogin().setHashFunctionName(pwdHashFunction);
-            entry.getLogin().setPassword(hashPassword(password));
-            updateUser(entry)
-            
-            if (isGenerated) {
-                log.info("Deleted (set random) Google Apps token for: [uid: ${person.getAttributeValue('uid')}], [username: ${person.getAttributeValue(grailsApplication.config.myt.calNetUsername)}], [account: ${entry.getLogin().getUserName()}].")
-            }
-            else {
-                log.info("Set Google Apps token for: [uid: ${person.getAttributeValue('uid')}], [username: ${person.getAttributeValue(grailsApplication.config.myt.calNetUsername)}], [account: ${entry.getLogin().getUserName()}].")
-            }
-            
+    boolean updateTokenForAccount(SearchResultEntry person, String token, Boolean userDefined = false) {
+        String primaryEmail = getPrimaryMailAccount(person)
+        Long uid = person.getAttributeValueAsInteger('uid') as Long
+
+        log.debug("Setting token for uid: $uid ($primaryEmail")
+        googleAdminAPIService.updatePasswordToken(primaryEmail, token)
+
+        def calnetId = getCalnetId(person)
+        if (userDefined) {
+            log.info("Set Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
+        } else {
+            log.info("Set Random Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
         }
-        catch (AppsForYourDomainException e) {
-            log.error("Could not update entry: ${e.getMessage()} - ${e.toString()}")
-            return [error:"Could not save the token: ${e.getMessage()} - ${e.toString()}"]
-        }
-        catch (ServiceException e) {
-            log.error("Google Apps Service exception: ${e.getMessage()} - ${e.toString()}")
-            return [error:"Could not save the token: ${e.getMessage()} - ${e.toString()}"]
-        }
-        catch (InvalidEntryException e) {
-            log.error("Google Apps Invalid Entry exception: ${e.getMessage()} - ${e.toString()}")
-            return [error:"Could not save the token: ${e.getMessage()} - ${e.toString()}"]
-        }
-        return []
+        true
     }
-    
+
     /**
-     * Updates the provided {@code entry} in Google.
+     * Takes the passed in {@code person}, sets the
+     * user's Google Apps Account token to a 30 char randomized key.
      *
-     * @param entry         A Google Apps entry.
+     * @param person The Google Apps user to be updated.
      */
-    def updateUser(UserEntry entry) {
-        URL updateUrl = 
-            new URL("${grailsApplication.config.myt.gAppsUrl}/${entry.getLogin().getUserName()}")
-        userService().update(updateUrl, entry)
+    boolean deleteTokenForAccount(SearchResultEntry person) {
+        String primaryEmail = getPrimaryMailAccount(person)
+        Long uid = person.getAttributeValueAsInteger('uid') as Long
+
+        log.debug("Setting token for uid: $uid ($primaryEmail")
+        googleAdminAPIService.updatePasswordToken(primaryEmail, TokenUtil.generateToken(30))
+
+        def calnetId = getCalnetId(person)
+        log.info("Deleted (randomized with 30 chars) Google Apps token for: [uid: $uid], [calnetId: $calnetId], [account: $primaryEmail].")
+        return true
     }
-    
+
     /**
-     * Hashes the provided {@code password} using the {@code pwdHashFunction}.
-     *
-     * @param password          The password to hash.
-     * @return The hashed password.
+     * Get the email associated with bConnected from the LDAP person logged in.
+     * @param person
+     * @return
      */
-    def hashPassword(String password) {
-        
-        MessageDigest messageDigest = MessageDigest.getInstance(pwdHashFunction)
-        messageDigest.update(password.getBytes())
-        byte[] byteData = messageDigest.digest()
-        
-        StringBuffer sb = new StringBuffer()
-        for (int i = 0; i < byteData.length; i++) {
-            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1))
-        }
-        
-        return sb.toString()
+    private String getPrimaryMailAccount(SearchResultEntry person) {
+        person.getAttributeValue(config.berkeleyEduAlternateID as String)
     }
-    
+
     /**
-     * Creates a {@code UserService} object and returns it.
-     *
-     * @return The UserService object.
+     * Get the calnetId associated with bConnected from the LDAP person logged in.
+     * @param person
+     * @return
      */
-    def userService() {
-        //if (userService) {
-        //    return userService
-        //}
-        //else {
-            UserService userService = new UserService("Berkeley-Token-App")
-            
-            userService.setUserCredentials(
-                grailsApplication.config.myt.gAppsUsername,
-                grailsApplication.config.myt.gAppsPassword)
-            return userService
-        //}
+    private String getCalnetId(SearchResultEntry person) {
+        String calnetIdKey = config.calNetUsername
+        person.getAttributeValue(calnetIdKey)
     }
-    
+
+
+    private Map getConfig() {
+        grailsApplication.config.myt
+    }
+
 }

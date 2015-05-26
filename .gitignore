@@ -1,6 +1,19 @@
-.DS_Store
-.classpath
-.project
+*.iws
+*Db.properties
+*Db.script
 .settings
 stacktrace.log
-target
+/*.zip
+/plugin.xml
+/*.log
+/*DB.*
+/cobertura.ser
+.DS_Store
+/target/
+/out/
+/web-app/plugins
+/web-app/WEB-INF/classesmmk-grailsPlugins.iml mmk.iml
+mmk-config.groovy
+*.iml
+*.ipr
+
