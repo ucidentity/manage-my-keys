@@ -13,16 +13,8 @@ environments {
     }
     test {
         dataSource_wpa {
-            dbCreate = "update"
+            dbCreate = "create-drop"
             url = "jdbc:h2:mem:testWpaDb;MVCC=TRUE"
-            driverClassName = "org.h2.Driver"
-            username = "sa"
-            password = ""
-        }
-
-        dataSource_calmail {
-            dbCreate = "update"
-            url = "jdbc:h2:mem:devCalMailDb;MVCC=TRUE"
             driverClassName = "org.h2.Driver"
             username = "sa"
             password = ""

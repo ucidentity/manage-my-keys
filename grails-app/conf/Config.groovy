@@ -1,3 +1,4 @@
+import grails.util.Environment
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 // locations to search for config files that get merged into the main config
@@ -5,18 +6,12 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 def serverConfigPath = System.getProperty("${appName}.config.location", '/opt/idc/conf')
 
-grails.config.locations = [
+Environment.current != Environment.TEST ? grails.config.locations = [
         "classpath:${appName}-config.groovy",
-        "classpath:registry-common-config.groovy",
-        "classpath:app-${grails.util.Environment.current.name}-config.groovy",
-        "file:./externalConf/registry-common-config.groovy",
-        "file:./externalConf/${appName}-config.groovy",
-        "file:./externalConf/app-${grails.util.Environment.current.name}-config.groovy",
         "file:${userHome}/.grails/${appName}-config.groovy",
-        "file:${userHome}/.grails/registry-common-config.groovy",
         "file:${serverConfigPath}/${appName}-config.groovy",
-        "file:${serverConfigPath}/registry-common-config.groovy"
-]
+] : [] // Don't load external configs if running in test
+
 // Printing configuration locations for debugging purposes
 def resourceResolver = new PathMatchingResourcePatternResolver()
 grails.config.locations.each { String location ->
@@ -93,6 +88,11 @@ environments {
     test {
         grails.mail.port = com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
+        myt.calNetUsername = 'berkeleyEduKerberosPrincipalString'
+        myt.krbAppId = 'krbappid'
+        myt.krbAuthKey = 'krbpasswd'
+
+        myt.krbURL = 'http://localhost:9999/krbservice?'
     }
     production {
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
