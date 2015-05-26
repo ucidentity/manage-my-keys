@@ -18,8 +18,8 @@ class CalNetService {
      * @param person UnboundID LDAP SDK person
      * @return true if the authN attempt is successful, and false otherwise.
      */
-    def testAuthenticationFor(passphrase, person) {
-        def calnetId = person.getAttributeValue(grailsApplication.config.myt.calNetUsername)
+    boolean testAuthenticationFor(String passphrase, Entry person) {
+        def calnetId = person.getAttributeValue(grailsApplication.config.myt.calNetUsername as String)
         def url = "${grailsApplication.config.myt.krbURL}authN"
 
         def params = [
@@ -37,11 +37,11 @@ class CalNetService {
             response = reader.text.split(/\n/)
         }
 
-        return response[0] == "0" ? true : false
+        return response[0] == "0"
 
     }
 
-    def validatePassphraseComplexityFor(String passphrase, Entry person) {
+    boolean validatePassphraseComplexityFor(String passphrase, Entry person) {
 
         // Get the ID and displayName of the person
         String calnetId = person.getAttributeValue(grailsApplication.config.myt.calNetUsername as String)
