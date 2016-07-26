@@ -1,10 +1,9 @@
 import edu.berkeley.calnet.mmk.dev.GoogleAdminAPIDevMockService
+import grails.util.Environment
 
 // Place your Spring DSL code here
 beans = {
-    environments {
-        test {
-            googleAdminAPIService(GoogleAdminAPIDevMockService)
-        }
+    if (Environment.current == Environment.TEST) {
+        googleAdminAPIService(GoogleAdminAPIDevMockService)
     }
 }
