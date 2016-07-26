@@ -13,8 +13,12 @@ class GoogleAdminAPIDevMockService implements InitializingBean{
     }
 
     User getUser(String userId) {
+        if(!userId) {
+            println "Did not create dummy Google User, since userId was null"
+            return null
+        }
         def user = new User().setPrimaryEmail(userId).setName(new UserName().setGivenName("Test").setFamilyName("User").setFullName("Test X User"))
-        println "Create dummy user: $user"
+        println "Create dummy Google User: $user"
         return user
     }
 

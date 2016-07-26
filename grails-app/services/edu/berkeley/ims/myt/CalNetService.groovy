@@ -36,7 +36,6 @@ class CalNetService {
         http.post(body: params) { resp, reader ->
             response = reader.text.split(/\n/)
         }
-
         return response[0] == "0"
 
     }

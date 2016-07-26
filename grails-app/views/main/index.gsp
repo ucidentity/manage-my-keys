@@ -13,6 +13,7 @@
                 </button>
             </g:form>
         </li>
+        <mmk:ifBconnected>
         <li>
             <g:form controller="bapps" action="index" method="get" name="bapps">
                 <button type="submit" class="btn">
@@ -20,5 +21,6 @@
                 </button>
             </g:form>
         </li>
+        </mmk:ifBconnected>
     </ul>
         
