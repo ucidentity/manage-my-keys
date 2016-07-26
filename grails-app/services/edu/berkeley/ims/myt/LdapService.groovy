@@ -14,6 +14,7 @@ class LdapService implements InitializingBean {
     def grailsApplication
     
     String peopleDn
+    String guestsDn
     String peopleRdnAttr
     String departmentsDn
     String personUsernameAttr
@@ -37,6 +38,7 @@ class LdapService implements InitializingBean {
     def setConfig() {
         autoReconnect      = grailsApplication.config.ldap.autoReconnect
         peopleDn           = grailsApplication.config.ldap.peopleDn
+        guestsDn           = grailsApplication.config.ldap.guestsDn
         peopleRdnAttr      = grailsApplication.config.ldap.peopleRdnAttr
         departmentsDn      = grailsApplication.config.ldap.departmentsDn
         personUsernameAttr = grailsApplication.config.ldap.personUsernameAttr
@@ -67,7 +69,10 @@ class LdapService implements InitializingBean {
     def find(final String attributeName, final String value) {
         List<SearchResultEntry> entries = search(attributeName, cleanString(value), peopleDn)
         if (entries.size() > 0) {
-            return (SearchResultEntry)entries.get(0)
+            return entries[0]
+        } else if(guestsDn) {
+            entries = search(attributeName, cleanString(value), guestsDn)
+            return entries.size() > 0 ? entries[0] : null
         }
         return null
     }

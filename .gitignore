@@ -16,4 +16,6 @@ stacktrace.log
 mmk-config.groovy
 *.iml
 *.ipr
+/.slcache
+atlassian-ide-plugin.xml
 

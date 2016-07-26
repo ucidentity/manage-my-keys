@@ -1,6 +1,8 @@
 package edu.berkeley.ims.myt
 
 class AuthorizationService {
+    static final MATCH_PATTERNS = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-COLLABORATOR/]
+    static final REJECT_PATTERNS = [~/AFFILIATE-TYPE-ADVCON.*/]
 
     /**
      * Checks to see if a user is authorized to use the WPA service. This has
@@ -10,27 +12,11 @@ class AuthorizationService {
      * @return true if the person is authorized based on their affiliations, or
      * false if not authorized.
      */
-    def isAuthorizedWpa(affiliations) {
-        def staffPattern = ~/EMPLOYEE-TYPE-.*/
-        def studentPattern = ~/STUDENT-TYPE-.*/
-        def affiliatePattern = ~/AFFILIATE-TYPE-.*/
-        def affiliateRejectPattern = ~/AFFILIATE-TYPE-ADVCON.*/
-        
-        def isAuthorized = false
-        
-        affiliations?.each { affiliation ->
-            if (affiliation.matches(staffPattern)
-                || affiliation.matches(studentPattern)
-                || (affiliation.matches(affiliatePattern) &&
-                    (!affiliation.matches(affiliateRejectPattern)))) {
-                isAuthorized = true
-            }
-        }
-        if (isAuthorized) {
-            return true
-        }
-        else {
-            return false
+    def isAuthorizedWpa(List<String> affiliations) {
+
+        return affiliations?.any { affiliation ->
+            // Match one of the MATCH_PATTERNS and none of the REJECT_PATTERNS
+            return MATCH_PATTERNS.any { pattern -> affiliation.matches(pattern) } && !(REJECT_PATTERNS.any { pattern -> affiliation.matches(pattern)})
         }
     }
     

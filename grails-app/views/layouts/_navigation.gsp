@@ -3,7 +3,9 @@
 <g:if test="${session.person}">
 <ul class="nav">
     <li><g:link controller="wpa" action="index"><g:message code="navigation.manage.wpa" /></g:link></li>
-    <li><g:link controller="bapps" action="index"><g:message code="navigation.manage.bapps" /></g:link></li>
+    <mmk:ifBconnected>
+        <li><g:link controller="bapps" action="index"><g:message code="navigation.manage.bapps" /></g:link></li>
+    </mmk:ifBconnected>
 </ul>
 </g:if>
 <g:if test="${session.person}">
