@@ -72,6 +72,8 @@ class LdapService implements InitializingBean {
             return entries[0]
         } else if(guestsDn) {
             entries = search(attributeName, cleanString(value), guestsDn)
+            log.debug "Searching for $value in $attributeName on $guestsDn and found ${entries?.size()} entries"
+
             return entries.size() > 0 ? entries[0] : null
         }
         return null
@@ -498,14 +500,12 @@ class LdapService implements InitializingBean {
         
         String filter = "(${attribute}=${cleanString(value)})"
         
-        log.debug("Filter: ${filter}")
-        
         return searchUsingFilter(filter, base)
     }
     
     private List<SearchResultEntry> searchUsingFilter(final String filter, 
         final String base) {
-        
+        log.debug("searchUsingFilter($filter, $base)")
         SearchRequest searchRequest = new SearchRequest(
                 base, 
                 //SearchScope.SUBORDINATE_SUBTREE, // Sun DSEE doesn't have SUBORDINATE_SUBTREE

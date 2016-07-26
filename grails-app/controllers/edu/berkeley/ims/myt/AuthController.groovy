@@ -1,7 +1,5 @@
 package edu.berkeley.ims.myt
 
-import org.springframework.web.servlet.ModelAndView
-
 class AuthController {
 
     /* GrailsApplication -- needed for the config. */
@@ -41,8 +39,7 @@ class AuthController {
                 redirect(action:'failure')
             }
             else {
-                def person = ldapService.find(
-                    grailsApplication.config.ldap.personUsernameAttr, user)
+                def person = ldapService.find(grailsApplication.config.ldap.personUsernameAttr, user)
                 setSessionAndRedirect(person)
             }
         }
