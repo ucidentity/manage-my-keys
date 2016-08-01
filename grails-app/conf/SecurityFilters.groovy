@@ -1,3 +1,5 @@
+import javax.servlet.http.HttpSession
+
 class SecurityFilters {
 
     /* GrailsApplication -- needed for the config. */
@@ -28,6 +30,7 @@ class SecurityFilters {
                         redirect(controller:'auth', action:'index')
                         return false
                     }
+                    getGoogleAccountForSession(session)
                 }
             }
         }
@@ -56,9 +59,7 @@ class SecurityFilters {
          */
         isAuthorizedCalMail(controller:'bapps', action:'*') {
             before = {
-                if (!session.googleAppsAccount) {
-                    session.googleAppsAccount = googleAppsService.getGoogleAppsAccount(session.person)
-                }
+                getGoogleAccountForSession(session)
                 if(!session.googleAppsAccount) {
                     redirect(controller:'auth', action:'notEligibleBApps')
                     return false
@@ -68,5 +69,11 @@ class SecurityFilters {
         }
         
     }
-    
+
+    private void getGoogleAccountForSession(HttpSession session) {
+        if (!session.googleAppsAccount) {
+            session.googleAppsAccount = googleAppsService.getGoogleAppsAccount(session.person)
+        }
+    }
+
 }

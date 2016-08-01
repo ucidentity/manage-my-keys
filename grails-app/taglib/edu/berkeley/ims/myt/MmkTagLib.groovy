@@ -5,7 +5,8 @@ class MmkTagLib {
 
 
     def ifBconnected = { attrs, body ->
-        if (session.googleAppsAccount) {
+        boolean googleAppsAccount = session.googleAppsAccount
+        if (googleAppsAccount) {
             out << body()
         }
     }
