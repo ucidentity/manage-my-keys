@@ -20,8 +20,10 @@ class GoogleAppsService {
         log.debug("Searching for $primaryEmail in the Google API")
         def user = googleAdminAPIService.getUser(primaryEmail)
         if (user) {
+            log.debug("Found user $primaryEmail in Google API")
             new GoogleUser(name: user.getName().getFullName(), emailAddress: user.getPrimaryEmail())
         } else {
+            log.debug("Did not find user $primaryEmail in google API")
             return null
         }
     }

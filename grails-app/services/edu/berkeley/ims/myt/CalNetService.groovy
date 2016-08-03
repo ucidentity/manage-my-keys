@@ -34,7 +34,9 @@ class CalNetService {
         def http = new HTTPBuilder(url)
 
         http.post(body: params) { resp, reader ->
-            response = reader.text.split(/\n/)
+            String text = reader.text
+            log.debug("Response for $url: $text")
+            response = text.split(/\n/)
         }
         return response[0] == "0"
 
