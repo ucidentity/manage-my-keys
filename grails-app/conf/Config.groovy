@@ -93,6 +93,8 @@ environments {
         myt.krbAuthKey = 'krbpasswd'
 
         myt.krbURL = 'http://localhost:9999/krbservice?'
+        ldap.personUsernameAttr = 'uid'
+        ldap.peopleDnString = 'ou=people,dc=berkeley,dc=edu;ou=guests,dc=berkeley,dc=edu;ou=advcon people,dc=berkeley,dc=edu'
     }
     production {
         // Now maintained in external config at /opt/idc/conf/ManageMyTokensConfig.groovy
