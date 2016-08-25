@@ -32,6 +32,8 @@ class SecurityFilters {
                     }
                     getGoogleAccountForSession(session)
                 }
+                return true
+
             }
         }
         
