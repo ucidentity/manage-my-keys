@@ -13,8 +13,6 @@ class LdapService implements InitializingBean {
     
     def grailsApplication
     
-    String peopleDn
-    String guestsDn
     String peopleRdnAttr
     String departmentsDn
     String personUsernameAttr
@@ -37,8 +35,6 @@ class LdapService implements InitializingBean {
     
     def setConfig() {
         autoReconnect      = grailsApplication.config.ldap.autoReconnect
-        peopleDn           = grailsApplication.config.ldap.peopleDn
-        guestsDn           = grailsApplication.config.ldap.guestsDn
         peopleRdnAttr      = grailsApplication.config.ldap.peopleRdnAttr
         departmentsDn      = grailsApplication.config.ldap.departmentsDn
         personUsernameAttr = grailsApplication.config.ldap.personUsernameAttr
@@ -66,15 +62,12 @@ class LdapService implements InitializingBean {
         return string.replaceAll("[\\(\\)]+", "")
     }
     
-    def find(final String attributeName, final String value) {
-        List<SearchResultEntry> entries = search(attributeName, cleanString(value), peopleDn)
+    def find(final String attributeName, final String value, final String dn) {
+        log.debug("Search $dn in $attributeName for $value")
+        List<SearchResultEntry> entries = search(attributeName, cleanString(value), dn)
+        log.debug("- found ${entries.size()} entries ")
         if (entries.size() > 0) {
-            return entries[0]
-        } else if(guestsDn) {
-            entries = search(attributeName, cleanString(value), guestsDn)
-            log.debug "Searching for $value in $attributeName on $guestsDn and found ${entries?.size()} entries"
-
-            return entries.size() > 0 ? entries[0] : null
+            return entries.first()
         }
         return null
     }
