@@ -13,8 +13,8 @@ class AuthorizationService {
 
     List<String> peopleDns
 
-    static final MATCH_PATTERNS = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-COLLABORATOR/, ~/AFFILIATE-TYPE-ADVCON.*/]
-    static final REJECT_PATTERNS = []
+    static final MATCH_PATTERNS = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-COLLABORATOR/]
+    static final REJECT_PATTERNS = [~/AFFILIATE-TYPE-ADVCON.*/]
 
     /**
      * Checks to see if a user is authorized to use the WPA service. This has

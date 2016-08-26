@@ -45,7 +45,7 @@ class AuthorizationServiceSpec extends Specification {
         ["EMPLOYEE-STATUS-EXPIRED", "AFFILIATE-STATUS-EXPIRED"]                          | false
         ["EMPLOYEE-TYPE-STAFF", "STUDENT-TYPE-NOT REGISTERED"]                           | true
         ["STUDENT-TYPE-NOT REGISTERED", "AFFILIATE-TYPE-TEMPORARY AGENCY STAFF"]         | true
-        ["AFFILIATE-TYPE-ADVCON-ALUMNUS"]                                                | true
+        ["AFFILIATE-TYPE-ADVCON-ALUMNUS"]                                                | false
         ["EMPLOYEE-TYPE-ACADEMIC", "AFFILIATE-TYPE-ADVCON-ALUMNUS"]                      | true
         ["AFFILIATE-TYPE-ADVCON-ALUMNUS", "EMPLOYEE-TYPE-ACADEMIC"]                      | true
         ["EMPLOYEE-TYPE-ACADEMIC", "STUDENT-STATUS-EXPIRED", "AFFILIATE-STATUS-EXPIRED"] | true
