@@ -10,5 +10,17 @@ class MmkTagLib {
             out << body()
         }
     }
+    def ifWpa = { attrs, body ->
+        boolean showWpa = session.isWpaAuthorized
+        if (showWpa) {
+            out << body()
+        }
+    }
 
+    def isNotWpaOrBconnected = { attrs, body ->
+        boolean neither = !session.isWpaAuthorized && !session.googleAppsAccount
+        if (neither) {
+            out << body()
+        }
+    }
 }

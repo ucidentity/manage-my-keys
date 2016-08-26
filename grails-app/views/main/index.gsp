@@ -1,26 +1,32 @@
-<meta name="layout" content="ucb" />
+<meta name="layout" content="ucb"/>
 
-<h1><g:message code="overview.welcome" /></h1>
-<p><g:message code="overview.welcomeMessage" /></p>
+<h1><g:message code="overview.welcome"/></h1>
 
-<h2><g:message code="overview.optionsHeading" /></h2>
-    
-    <ul class="options-list buttons">
+<p><g:message code="overview.welcomeMessage"/></p>
+
+<h2><g:message code="overview.optionsHeading"/></h2>
+
+<ul class="options-list buttons">
+    <mmk:ifWpa>
         <li>
             <g:form controller="wpa" action="index" method="get" name="wpa">
                 <button type="submit" class="btn">
-                    <i class="icon-signal"></i> <g:message code="overview.wpaLink" />
+                    <i class="icon-signal"></i> <g:message code="overview.wpaLink"/>
                 </button>
             </g:form>
         </li>
-        <mmk:ifBconnected>
+    </mmk:ifWpa>
+    <mmk:ifBconnected>
         <li>
             <g:form controller="bapps" action="index" method="get" name="bapps">
                 <button type="submit" class="btn">
-                    <i class="icon-calendar"></i> <g:message code="overview.bAppsLink" />
+                    <i class="icon-calendar"></i> <g:message code="overview.bAppsLink"/>
                 </button>
             </g:form>
         </li>
-        </mmk:ifBconnected>
-    </ul>
+    </mmk:ifBconnected>
+    <mmk:isNotWpaOrBconnected>
+        <g:message code="overview.notElegible"/>
+    </mmk:isNotWpaOrBconnected>
+</ul>
         
