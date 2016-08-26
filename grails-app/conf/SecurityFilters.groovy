@@ -44,9 +44,9 @@ class SecurityFilters {
             before = {
                 def affiliations =
                     session.person.getAttributeValues(grailsApplication.config.ldap.personAffiliationAttr as String) as List<String>
-                def isAuthorized = authorizationService.isAuthorizedWpa(affiliations)
-                
-                if (isAuthorized) {
+                def isWpaAuthorized = authorizationService.isAuthorizedWpa(affiliations)
+                session.isWpaAuthorized = isWpaAuthorized
+                if (isWpaAuthorized) {
                     return true
                 }
                 else {
