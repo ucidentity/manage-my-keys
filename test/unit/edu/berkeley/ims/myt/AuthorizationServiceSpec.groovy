@@ -25,6 +25,10 @@ class AuthorizationServiceSpec extends Specification {
     @Shared
     SearchResultEntry ADVCON = GroovyMock(SearchResultEntry)
 
+    def setup(){
+        setConfig('')
+    }
+
     /**
      * Test the various combinations of affiliations to make sure the
      * isAuthoirzedWpa() logic is correct. Basically, any affiliate except for
@@ -53,12 +57,41 @@ class AuthorizationServiceSpec extends Specification {
     }
 
     @Unroll
+    def "Test that user is authorized for various combinations of affiliations when using the config"() {
+        given:
+        setConfig '''
+            wpa.matchPatterns = 'EMPLOYEE-TYPE-.*;STUDENT-TYPE-.*;AFFILIATE-TYPE-.*;GUEST-TYPE-COLLABORATOR;AFFILIATE-TYPE-ADVCON-.*'
+            wpa.rejectPatterns = ''
+        '''
+        when:
+        def result = service.isAuthorizedWpa(affiliations)
+
+        then:
+        result == expectedResult
+
+        where:
+        affiliations                                                                     | expectedResult
+        ["EMPLOYEE-TYPE-STAFF", "STUDENT-STATUS-EXPIRED"]                                | true
+        ["EMPLOYEE-TYPE-STAFF", "AFFILIATE-STATUS-EXPIRED"]                              | true
+        ["EMPLOYEE-STATUS-EXPIRED", "AFFILIATE-STATUS-EXPIRED"]                          | false
+        ["EMPLOYEE-TYPE-STAFF", "STUDENT-TYPE-NOT REGISTERED"]                           | true
+        ["STUDENT-TYPE-NOT REGISTERED", "AFFILIATE-TYPE-TEMPORARY AGENCY STAFF"]         | true
+        ["AFFILIATE-TYPE-ADVCON-ALUMNUS"]                                                | true
+        ["EMPLOYEE-TYPE-ACADEMIC", "AFFILIATE-TYPE-ADVCON-ALUMNUS"]                      | true
+        ["AFFILIATE-TYPE-ADVCON-ALUMNUS", "EMPLOYEE-TYPE-ACADEMIC"]                      | true
+        ["EMPLOYEE-TYPE-ACADEMIC", "STUDENT-STATUS-EXPIRED", "AFFILIATE-STATUS-EXPIRED"] | true
+        ['GUEST-TYPE-COLLABORATOR']                                                      | true
+    }
+
+    @Unroll
     def "Test that authorize user works as expected"() {
         given:
         service.ldapService = GroovyMock(LdapService)
         and:
-        service.personUsernameAttr = 'uid'
-        service.peopleDnString = 'ou=people,dc=berkeley,dc=edu;ou=guests,dc=berkeley,dc=edu;ou=advcon people,dc=berkeley,dc=edu'
+        setConfig '''
+            ldap.personUsernameAttr = 'uid'
+            ldap.peopleDnString = 'ou=people,dc=berkeley,dc=edu;ou=guests,dc=berkeley,dc=edu;ou=advcon people,dc=berkeley,dc=edu'
+        '''
 
         when:
         def result = service.authorizeUser('12345')
@@ -78,6 +111,12 @@ class AuthorizationServiceSpec extends Specification {
         null   | 1           | GUEST | 1          | ADVCON | 0           | GUEST
         null   | 1           | null  | 1          | ADVCON | 1           | ADVCON
         null   | 1           | null  | 1          | null   | 1           | null
+    }
+
+    private void setConfig(String config) {
+        ConfigObject co = new ConfigSlurper().parse(config)
+
+        service.setConfiguration(co)
     }
 
 }

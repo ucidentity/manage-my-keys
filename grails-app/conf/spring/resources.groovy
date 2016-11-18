@@ -3,7 +3,7 @@ import grails.util.Environment
 
 // Place your Spring DSL code here
 beans = {
-    if (Environment.current in [Environment.DEVELOPMENT, Environment.TEST] ) {
+    if (application.config.mmk.googleAdminAPI.useMock) {
         googleAdminAPIService(GoogleAdminAPIDevMockService)
     }
 }

@@ -1,20 +1,19 @@
 package edu.berkeley.ims.myt
 
 import com.unboundid.ldap.sdk.SearchResultEntry
+import org.codehaus.groovy.grails.plugins.support.aware.GrailsConfigurationAware
 import org.springframework.beans.factory.annotation.Value
 
-class AuthorizationService {
+import java.util.regex.Pattern
 
+class AuthorizationService implements GrailsConfigurationAware {
     /* LdapService */
     def ldapService
 
-    @Value('${ldap.personUsernameAttr}')
     String personUsernameAttr
-
     List<String> peopleDns
-
-    static final MATCH_PATTERNS = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-COLLABORATOR/]
-    static final REJECT_PATTERNS = [~/AFFILIATE-TYPE-ADVCON.*/]
+    List<Pattern> matchPatterns = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-COLLABORATOR/]
+    List<Pattern> rejectPatterns = [~/AFFILIATE-TYPE-ADVCON.*/]
 
     /**
      * Checks to see if a user is authorized to use the WPA service. This has
@@ -28,7 +27,7 @@ class AuthorizationService {
 
         return affiliations?.any { affiliation ->
             // Match one of the MATCH_PATTERNS and none of the REJECT_PATTERNS
-            return MATCH_PATTERNS.any { pattern -> affiliation.matches(pattern) } && !(REJECT_PATTERNS.any { pattern -> affiliation.matches(pattern) })
+            return matchPatterns.any { pattern -> affiliation.matches(pattern) } && !(rejectPatterns.any { pattern -> affiliation.matches(pattern) })
         }
     }
 
@@ -49,17 +48,30 @@ class AuthorizationService {
      * @return
      */
     SearchResultEntry authorizeUser(String user) {
-        for(dn in peopleDns) {
+        for (dn in peopleDns) {
             SearchResultEntry entry = ldapService.find(personUsernameAttr, user, dn)
-            if(entry) {
+            if (entry) {
                 return entry
             }
         }
         return null
     }
 
-    @Value('${ldap.peopleDnString}')
-    void setPeopleDnString(String peopleDns) {
-        this.peopleDns = peopleDns.split(';')
+    @Override
+    void setConfiguration(ConfigObject co) {
+        this.personUsernameAttr = co.ldap.personUsernameAttr
+        if(co.ldap.peopleDnString) {
+            this.peopleDns = co.ldap.peopleDnString.split(';')
+        }
+
+        if (co.wpa.matchPatterns) {
+            this.matchPatterns = co.wpa.matchPatterns.split(';').collect { Pattern.compile(it) }
+        }
+
+        if (co.wpa.rejectPatterns) {
+            this.rejectPatterns = co.wpa.rejectPatterns.split(';').collect { Pattern.compile(it) }
+        } else if (co.wpa.rejectPatterns == '') {
+            this.rejectPatterns = []
+        }
     }
 }
