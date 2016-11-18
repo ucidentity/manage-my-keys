@@ -39,6 +39,8 @@ mmk {
 
 </pre>
 
+Configuration can be done at https://console.developers.google.com/ (login with the tokenapp@berkeley.edu user for prod or tokenapp@testg.berkeley.edu for dev/qa) 
+
 ### Database configuration changes
 
 Remove datasource for CalMail (not needed any longer)

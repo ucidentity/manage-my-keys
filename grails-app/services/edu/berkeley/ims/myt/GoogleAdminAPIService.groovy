@@ -32,8 +32,9 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @return The found user
      */
-    @Cacheable('gooleUser')
     User getUser(String userId) {
+        // This will alter the users domain (eg. for testg.berkeley.edu)
+        userId = prefixDomain(userId)
         log.debug("Retrieving user: $userId")
         try {
             def user = directoryService.users().get(userId).execute()
@@ -54,8 +55,8 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @param token
      */
-    @CacheEvict(value = 'googleUser', key = '#userId')
     void updatePasswordToken(String userId, String token) {
+        userId = prefixDomain(userId)
         def user = getUser(userId)
         if (user) {
 
@@ -65,7 +66,7 @@ class GoogleAdminAPIService implements InitializingBean {
 
             user.setHashFunction(MD5).setPassword(newToken)
             try {
-                directoryService.users().update(userId, user).execute()
+                directoryService.users().update(user, user).execute()
                 log.debug("Updated user $userId password")
             } catch (e) {
                 log.warn("Failed to update $userId password: $e.message", e)
@@ -73,6 +74,19 @@ class GoogleAdminAPIService implements InitializingBean {
         } else {
             log.warn("Could not update $userId password")
         }
+    }
+    /**
+     * For test-servers, the user account domain should be prefixed with 'testg'
+     * @param userId
+     * @return
+     */
+    String prefixDomain(String userId) {
+        String domainPrefix = adminAPIConfig.domainPrefix ?: ''
+        if (domainPrefix && !userId.contains(domainPrefix)) {
+            def (String account, String domain)  = userId.split('@')
+            userId = "${account}@${domainPrefix}.${domain}"
+        }
+        return userId
     }
     /**
      * Initialize the Google Admin API Directory Service client
