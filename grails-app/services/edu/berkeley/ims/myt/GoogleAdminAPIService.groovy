@@ -32,6 +32,7 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @return The found user
      */
+    @Cacheable('gooleUser')
     User getUser(String userId) {
         // This will alter the users domain (eg. for testg.berkeley.edu)
         userId = prefixDomain(userId)
@@ -55,6 +56,7 @@ class GoogleAdminAPIService implements InitializingBean {
      * @param userId The users account name (user@berkeley.edu)
      * @param token
      */
+    @CacheEvict(value = 'googleUser', key = '#userId')
     void updatePasswordToken(String userId, String token) {
         userId = prefixDomain(userId)
         def user = getUser(userId)
