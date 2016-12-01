@@ -68,7 +68,7 @@ class GoogleAdminAPIService implements InitializingBean {
 
             user.setHashFunction(MD5).setPassword(newToken)
             try {
-                directoryService.users().update(user, user).execute()
+                directoryService.users().update(userId, user).execute()
                 log.debug("Updated user $userId password")
             } catch (e) {
                 log.warn("Failed to update $userId password: $e.message", e)
