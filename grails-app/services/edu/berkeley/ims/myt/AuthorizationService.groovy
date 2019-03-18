@@ -12,7 +12,7 @@ class AuthorizationService implements GrailsConfigurationAware {
 
     String personUsernameAttr
     List<String> peopleDns
-    List<Pattern> matchPatterns = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-.*/ ]
+    List<Pattern> matchPatterns = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-.*/]
     List<Pattern> rejectPatterns = [~/AFFILIATE-TYPE-ADVCON.*/]
 
     /**
