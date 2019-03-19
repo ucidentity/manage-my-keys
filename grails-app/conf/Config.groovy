@@ -128,7 +128,7 @@ grails.cache.config = {
     }
 }
 
-wpa.matchPatterns = 'EMPLOYEE-TYPE-.*;STUDENT-TYPE-.*;AFFILIATE-TYPE-.*;GUEST-TYPE-COLLABORATOR;AFFILIATE-TYPE-ADVCON-.*'
+wpa.matchPatterns = 'EMPLOYEE-TYPE-.*;STUDENT-TYPE-.*;AFFILIATE-TYPE-.*;GUEST-TYPE-.*;AFFILIATE-TYPE-ADVCON-.*'
 wpa.rejectPatterns = ''
 
 // log4j configuration is external, too.
