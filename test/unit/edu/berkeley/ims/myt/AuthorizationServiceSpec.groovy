@@ -54,6 +54,7 @@ class AuthorizationServiceSpec extends Specification {
         ["AFFILIATE-TYPE-ADVCON-ALUMNUS", "EMPLOYEE-TYPE-ACADEMIC"]                      | true
         ["EMPLOYEE-TYPE-ACADEMIC", "STUDENT-STATUS-EXPIRED", "AFFILIATE-STATUS-EXPIRED"] | true
         ['GUEST-TYPE-COLLABORATOR']                                                      | true
+        ['GUEST-TYPE-SPONSORED']                                                          | true
     }
 
     @Unroll
