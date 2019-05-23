@@ -15,6 +15,7 @@ class AuthorizationService implements GrailsConfigurationAware {
     List<Pattern> matchPatterns = [~/EMPLOYEE-TYPE-.*/, ~/STUDENT-TYPE-.*/, ~/AFFILIATE-TYPE-.*/, ~/GUEST-TYPE-.*/]
     List<Pattern> rejectPatterns = [~/AFFILIATE-TYPE-ADVCON.*/]
 
+    
     /**
      * Checks to see if a user is authorized to use the WPA service. This has
      * been factored into its own method so that the logic can be easily tested.
