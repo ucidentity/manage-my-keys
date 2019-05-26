@@ -8,12 +8,12 @@
     <g:message code="wpa.viewPage.generalMessage" />
 </p>
 
-<h2><g:message code=""general.viewPage.yourUserNameIs</h2>
+<h2><g:message code="general.viewPage.yourUserNameIs"</h2>
 <p class="token-value">
     ${username}
 </p>
 
-<h2><g:message code=""general.viewPage.yourEduRoamUserNameIs</h2>
+<h2><g:message code="general.viewPage.yourEduRoamUserNameIs"</h2>
 <p class="token-value">
     ${username}@berkeley.edu
 </p>
