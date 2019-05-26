@@ -87,4 +87,28 @@ class WpaService {
             return null
         }
     }
+
+
+
+
+   /**
+    * Returns the username, or null if not found.
+    *
+    * @param person           The currently logged in user, which will be an
+    * UnboundID SearchResultEntry.
+    * @return The username for the person, or null if there is no
+    * token set.
+    */
+    def username(person) {
+        def username =
+                person.getAttributeValue(grailsApplication.config.myt.wpaTokenLdapUsername)
+        if (username) {
+            return username
+        }
+        else {
+            return null
+        }
+    }
+
+
 }
