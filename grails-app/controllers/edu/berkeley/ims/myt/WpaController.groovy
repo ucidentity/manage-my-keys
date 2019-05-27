@@ -31,7 +31,7 @@ class WpaController {
     def set() {
         def token = TokenUtil.generateToken(8)
         session.currentToken = token
-        def username = wpaService.username(session.person)
+        def username = wpaService.getUsername(session.person)
         return new ModelAndView('/wpa/set',
             ['token':token, 'username':username])
     }
