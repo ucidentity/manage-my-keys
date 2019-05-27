@@ -99,7 +99,7 @@ class WpaService {
     * @return The username for the person, or null if there is no
     * token set.
     */
-    def username(person) {
+    def getUsername(person) {
         def username =
                 person.getAttributeValue(grailsApplication.config.myt.wpaTokenLdapUsername)
         if (username) {
