@@ -137,12 +137,14 @@ class BappsController {
 
         static constraints = {
             token(nullable: false, size: 9..255, validator: { val, obj ->
+                /*** no longer need these checks
                 if (obj.calNetService.testAuthenticationFor(val, obj.session.person)) {
                     return 'cannotmatchcalnet'
                 }
                 if (!obj.calNetService.validatePassphraseComplexityFor(val, obj.session.person)) {
                     return 'doesnotmeetrequirements'
                 }
+                 ***/
             })
             tokenRepeat(validator: { val, obj ->
                 if (val != obj.token) {

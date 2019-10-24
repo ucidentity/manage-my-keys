@@ -57,18 +57,7 @@
         </fieldset>
     </g:form>
 
-    <div class="modal hide" id="passphraseRequirements">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">×</button>
-            <h3>CalNet Passphrase Requirements</h3>
-        </div>
-        <div class="modal-body">
-            <g:message code="general.calNetPassphraseRequirements" />
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
-        </div>
-    </div>
+
 
     <script>
         $('#defineTab').click(function () {
