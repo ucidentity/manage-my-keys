@@ -52,7 +52,7 @@
             </div> <!-- End of tabbable -->
 
             <div class="form-actions">
-                <input type="submit" class="btn btn-primary" name="save" value="Set Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.emailAddress}"><g:message code="general.returnToOptions" /></g:link>
+                <input type="submit" class="btn btn-primary" name="save" value="Set Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.emailAddress}" token=""><g:message code="general.returnToOptions" /></g:link>
             </div>
 
         </fieldset>
