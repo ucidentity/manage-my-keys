@@ -12,15 +12,7 @@
         <fieldset>
             <!-- <legend><g:message code="bapps.setPage.legend" /></legend> -->
 
-            <div class="tabbable">
-                <ul class="nav nav-tabs">
-                    <li class="${userDefined ? '':'active'}"><a href="#predefined" id="predefineTab" data-toggle="tab" title="Pre-Generated token." >Pre-Generated</a></li>
-                </ul>
-
-                <div class="tab-content">
-
-                    <div class="tab-pane ${userDefined ? '':'active'}" id="predefined">
-                        <div class="control-group">
+                       <div class="control-group">
                             <p><g:message code="bapps.setPage.preGeneratedMessage" args="${[account.emailAddress]}"/></p>
 
                             <label class="control-label" for="token">Pre-Generated Key</label>
@@ -30,25 +22,6 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane ${userDefined ? 'active':''}" id="defined">
-                        <div class="control-group">
-                            <p><g:message code="bapps.setPage.defineYourOwnMessage" args="${[account.emailAddress]}"/></p>
-
-                            <p class="help-block"><g:message code="bapps.formPage.keyHelpTextForUserDefined" /></p>
-
-                            <p class="${hasErrors(bean:googleApps,field:'definedToken', 'error')}">
-                                <label class="control-label" for="token">Key</label>
-                                <input type="password" id="token" name="token" title="Your self-defined key.">
-                            </p>
-                            <p class="${hasErrors(bean:googleApps,field:'definedTokenConfirmation', 'error')}">
-                                <label class="control-label" for="tokenRepeat">Key Confirmation</label>
-                                <input type="password" id="tokenRepeat" name="tokenRepeat" title="Your self-defined key confirmation.">
-                            </p>
-                        </div>
-                    </div>
-
-                </div> <!-- End tab-content -->
-            </div> <!-- End of tabbable -->
 
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary" name="save" value="Set Key"/> &nbsp;  &nbsp; <g:link controller="bapps" action="index" id="${account.emailAddress}" token=""><g:message code="general.returnToOptions" /></g:link>

@@ -133,7 +133,7 @@ class BappsController {
 
         boolean userDefined
         String token
-        String tokenRepeat
+        //String tokenRepeat
 
         static constraints = {
             token(nullable: false, size: 9..255, validator: { val, obj ->
@@ -146,11 +146,12 @@ class BappsController {
                 }
                  ***/
             })
+            /**
             tokenRepeat(validator: { val, obj ->
                 if (val != obj.token) {
                     return 'donotmatch'
                 }
-            })
+            })**/
         }
     }
 
