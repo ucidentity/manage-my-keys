@@ -15,7 +15,7 @@
             <div class="tabbable">
                 <ul class="nav nav-tabs">
                     <li class="${userDefined ? '':'active'}"><a href="#predefined" id="predefineTab" data-toggle="tab" title="Pre-Generated token." >Pre-Generated</a></li>
-                 </ul>
+                </ul>
 
                 <div class="tab-content">
 
@@ -30,6 +30,22 @@
                         </div>
                     </div>
 
+                    <div class="tab-pane ${userDefined ? 'active':''}" id="defined">
+                        <div class="control-group">
+                            <p><g:message code="bapps.setPage.defineYourOwnMessage" args="${[account.emailAddress]}"/></p>
+
+                            <p class="help-block"><g:message code="bapps.formPage.keyHelpTextForUserDefined" /></p>
+
+                            <p class="${hasErrors(bean:googleApps,field:'definedToken', 'error')}">
+                                <label class="control-label" for="token">Key</label>
+                                <input type="password" id="token" name="token" title="Your self-defined key.">
+                            </p>
+                            <p class="${hasErrors(bean:googleApps,field:'definedTokenConfirmation', 'error')}">
+                                <label class="control-label" for="tokenRepeat">Key Confirmation</label>
+                                <input type="password" id="tokenRepeat" name="tokenRepeat" title="Your self-defined key confirmation.">
+                            </p>
+                        </div>
+                    </div>
 
                 </div> <!-- End tab-content -->
             </div> <!-- End of tabbable -->
@@ -41,7 +57,18 @@
         </fieldset>
     </g:form>
 
-
+    <div class="modal hide" id="passphraseRequirements">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>CalNet Passphrase Requirements</h3>
+        </div>
+        <div class="modal-body">
+            <g:message code="general.calNetPassphraseRequirements" />
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
+        </div>
+    </div>
 
     <script>
         $('#defineTab').click(function () {
