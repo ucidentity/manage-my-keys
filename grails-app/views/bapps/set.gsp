@@ -57,7 +57,7 @@
         </fieldset>
     </g:form>
 
-    
+
     <script>
         $('#defineTab').click(function () {
             // Remove any self-defined values
