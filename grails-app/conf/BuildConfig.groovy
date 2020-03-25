@@ -35,7 +35,7 @@ grails.project.dependency.resolution = {
 
         runtime 'mysql:mysql-connector-java:5.1.16'
         runtime 'postgresql:postgresql:9.1-901.jdbc4'
-        runtime 'com.unboundid:unboundid-ldapsdk:2.3.1'
+        runtime 'com.unboundid:unboundid-ldapsdk:2.3.6'
         //runtime 'org.jasig.cas:cas-client:3.1.10'
         compile 'com.google.apis:google-api-services-admin-directory:directory_v1-rev71-1.22.0'
 
