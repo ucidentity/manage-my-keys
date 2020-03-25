@@ -449,7 +449,7 @@ class LdapService implements InitializingBean {
                     sslUtil = new SSLUtil();
                 }
                 serverSet = new FailoverServerSet(
-                    addressesArray, portsIntArray, sslUtil.createSSLSocketFactory(), options)
+                    addressesArray, portsIntArray, sslUtil.createSSLSocketFactory("TLSv1.2"), options)
             }
             else {
                 serverSet = new FailoverServerSet(addresses, ports, options)
